@@ -1,0 +1,32 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  a {
+    @apply text-sky-800;
+  }
+
+  a:hover {
+    @apply text-sky-800 underline;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-block whitespace-nowrap rounded-md border-0 border-slate-950 bg-slate-600 p-2 font-bold text-slate-200 shadow-md transition duration-150 ease-in-out;
+
+    &:focus {
+      @apply outline-none;
+    }
+
+    &:hover,
+    &.hover {
+      @apply bg-slate-700;
+    }
+
+    &:active {
+      @apply bg-slate-800;
+    }
+  }
+}
