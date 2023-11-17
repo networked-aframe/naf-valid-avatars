@@ -1,7 +1,7 @@
 /* global AFRAME THREE */
 import './assets/style.css';
 import { render } from 'solid-js/web';
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal, onMount } from 'solid-js';
 
 const randomColor = () => {
   return '#' + new THREE.Color(Math.random(), Math.random(), Math.random()).getHexString();
@@ -13,6 +13,13 @@ const [username, setUsername] = createSignal('user-' + Math.round(Math.random() 
 const [color, setColor] = createSignal(randomColor());
 
 const ColorChangerAndUsername = () => {
+  onMount(() => {
+    const name = localStorage.getItem('username');
+    if (name) {
+      setUsername(name);
+    }
+  });
+
   createEffect(() => {
     const player = document.getElementById('player');
     if (player) {
@@ -21,6 +28,7 @@ const ColorChangerAndUsername = () => {
         color: color(),
       });
     }
+    localStorage.setItem('username', username());
   });
 
   let colorChangerBtn, nametagInput;
