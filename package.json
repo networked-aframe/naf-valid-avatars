@@ -11,7 +11,8 @@
     "start": "cross-env NODE_ENV=development node server.js",
     "dev": "cross-env NODE_ENV=development node server.js",
     "dev2": "cross-env NODE_ENV=development webpack serve",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "prettier": "prettier --write 'src/**/*.js' 'src/**/*.ts?'"
   },
   "dependencies": {
     "networked-aframe": "^0.11.0",
@@ -41,7 +42,7 @@
     "eslint-config-standard": "^17.1.0",
     "postcss": "^8.4.31",
     "postcss-loader": "^7.3.3",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "solid-refresh": "^0.5.3",
     "style-loader": "^3.3.3",
