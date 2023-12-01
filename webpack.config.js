@@ -1,12 +1,15 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/ui.js',
+  entry: {
+    components: './src/components.js',
+    ui: './src/ui.js',
+  },
   output: {
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'public/dist'),
     publicPath: '/dist/',
-    filename: 'ui.min.js',
+    filename: '[name].js',
   },
   externals: {
     // Stubs out `import ... from 'three'` so it returns `import ... from window.THREE` effectively using THREE global variable that is defined by AFRAME.

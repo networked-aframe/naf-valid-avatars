@@ -21,9 +21,9 @@ const ColorChangerAndUsername = () => {
   });
 
   createEffect(() => {
-    const player = document.getElementById('player');
-    if (player) {
-      player.setAttribute('player-info', {
+    const rig = document.getElementById('rig');
+    if (rig) {
+      rig.setAttribute('player-info', {
         name: username(),
         color: color(),
       });
@@ -86,8 +86,8 @@ const EnterScreen = () => {
         id="playButton"
         class="btn"
         onClick={() => {
-          const player = document.getElementById('player');
-          player.setAttribute('player-info', {
+          const rig = document.getElementById('rig');
+          rig.setAttribute('player-info', {
             name: username(),
             color: color(),
           });
