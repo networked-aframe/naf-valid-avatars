@@ -34,9 +34,9 @@ const ANIMATIONS = [
   ],
 ];
 
-const asianModel =
-  'https://cdn.glitch.global/f44aca78-cd3b-4880-ae65-fd1ae78083ef/Asian_F_1_Busi_without_normalmap_optimized_webp1024.glb?v=1700847375548';
-const selectedModel = asianModel;
+const asianModel = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/avatars/Asian/Asian_F_1_Busi.glb';
+// const defaultModel = asianModel;
+const defaultModel = ''; // none, set via the UI
 const animationsCache = {};
 
 // Temporary workaround for template declaration; see issue 167
@@ -77,7 +77,7 @@ AFRAME.registerComponent('player-info', {
   schema: {
     name: { type: 'string', default: 'anonymous' },
     color: { type: 'color', default: '#ffffff' },
-    avatarSrc: { type: 'string', default: selectedModel },
+    avatarSrc: { type: 'string', default: defaultModel },
     state: { type: 'string', default: 'Idle' },
   },
 

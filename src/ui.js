@@ -1,7 +1,7 @@
 /* global AFRAME THREE */
 import './assets/style.css';
 import { render } from 'solid-js/web';
-import { Show, createEffect, createSignal, onMount } from 'solid-js';
+import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 
 const randomColor = () => {
   return '#' + new THREE.Color(Math.random(), Math.random(), Math.random()).getHexString();
@@ -10,7 +10,23 @@ const randomColor = () => {
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
 const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
+const [avatarSrc, setAvatarSrc] = createSignal('');
 const [color, setColor] = createSignal(randomColor());
+
+const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/';
+const fetchAvatars = async () => {
+  const response = await fetch(avatarsBaseUrl + 'avatars.json');
+  if (!response.ok) {
+    return [];
+  }
+  const results = await response.json();
+  // console.log(results);
+  // results.forEach((entry) => {
+  //   console.log(avatarsBaseUrl + entry.image);
+  //   console.log(avatarsBaseUrl + entry.model);
+  // });
+  return results;
+};
 
 const ColorChangerAndUsername = () => {
   onMount(() => {
@@ -29,6 +45,22 @@ const ColorChangerAndUsername = () => {
       });
     }
     localStorage.setItem('username', username());
+  });
+
+  const [avatars] = createResource(fetchAvatars);
+
+  createEffect(() => {
+    if (!avatars.loading && avatars() && avatars().length > 0) {
+      const random = Math.floor(Math.random() * avatars().length);
+      setAvatarSrc(avatarsBaseUrl + avatars()[random].model);
+    }
+  });
+
+  createEffect(() => {
+    const rig = document.getElementById('rig');
+    rig.setAttribute('player-info', {
+      avatarSrc: avatarSrc(),
+    });
   });
 
   let colorChangerBtn, nametagInput;
