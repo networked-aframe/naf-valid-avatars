@@ -5,16 +5,15 @@
     <title>Nametag Example — Networked-Aframe</title>
     <meta name="description" content="Nametag — Networked-Aframe" />
 
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <!-- TODO with aframe 1.5.0 I get
-      three.module.js:48346 THREE.PropertyBinding: No target node found for track: master.quaternion.
-      three.module.js:48346 THREE.PropertyBinding: No target node found for track: Reference.quaternion. -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js"></script>
     <script src="/easyrtc/easyrtc.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.11.1/dist/networked-aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.11.1/examples/js/spawn-in-circle.component.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.0.3/dist/mirror.umd.min.js"></script>
+
     <script src="/dist/components.js"></script>
     <script defer src="/dist/ui.js"></script>
   </head>
@@ -43,6 +42,11 @@
 
       <a-entity environment="preset:forest;shadow:true"></a-entity>
       <a-entity light="type:ambient;intensity:0.5"></a-entity>
+
+      <!-- Mirror -->
+      <a-mirror id="mirror" position="0 1.8 -4" scale="5 3 1" rotation="0 45 0" layers="0,3">
+        <a-box color="black" position="0 0 -0.02" scale="1.02 1.02 0.01"></a-box>
+      </a-mirror>
 
       <a-entity
         id="rig"

@@ -1,8 +1,7 @@
 /* global AFRAME NAF THREE */
 
-// TODO in the animations the foot are not on the ground
+// TODO in the animations the feet are not on the ground
 // TODO document how I created the animations from mixamo.com
-// TODO document how I created the glb for the avatar
 const ANIMATIONS = [
   [
     'Idle',
@@ -194,14 +193,23 @@ AFRAME.registerComponent('player-info', {
     'model-loaded': async function (evt) {
       if (this.el.id === 'rig') {
         // Hide my own avatar
-        this.avatarEl.object3D.visible = false;
+        // this.avatarEl.object3D.visible = false;
+        this.avatarEl.object3D.traverse((obj) => {
+          if (!obj.layers) return;
+          obj.layers.disableAll();
+          obj.layers.enable(3);
+        });
       }
 
       const model = evt.detail.model;
+      // Original fbx avatar has master->Reference->H_DDS_HighRes
+      // meshoptimized glb avatar has Scene->H_DDS_HighRes, so we rename Scene to Armature and
+      // map Reference to Armature when converting the animations, also ignoring the master.quaternion track that doesn't seem to do anything.
+      model.name = 'Armature';
       this.mesh = model.getObjectByName('H_DDS_HighRes');
       if (!this.mesh) return;
-      //   window.mesh = this.mesh;
-      //   window.model = model;
+      // window.mesh = this.mesh;
+      // window.model = model;
 
       // if (this.nametagEl) {
       //   this.nametagEl.object3D.position.y = 1.8 + 0.16;
@@ -231,6 +239,7 @@ AFRAME.registerComponent('player-info', {
         clip.name = animationName;
         newClip = simpleRetargetClip(this.mesh, clip, {
           hip: 'Hips',
+          names: { Reference: 'Armature' },
           offsets: options.quatOffsets ?? {},
           positionMultiplier: options.positionMultiplier ?? 1.0,
           ignoreBones: options.ignoreBones ?? [],
@@ -242,7 +251,6 @@ AFRAME.registerComponent('player-info', {
       }
 
       animationsCache[cacheKey] = Array.from(model.animations);
-      window.model = model;
       callback();
     },
   },
@@ -274,7 +282,7 @@ function simpleRetargetClip(target, clip, options = {}) {
     const boneName = names[mixamoRigName] || mixamoRigName;
     const propertyName = trackSplitted[1];
     const boneTo = getBoneByName(boneName, target.skeleton);
-    if (!boneTo && boneName !== 'Armature' && boneName !== 'master' && boneName !== 'Reference') return;
+    if (!boneTo && boneName !== 'Armature') return;
     if (ignoreBones.indexOf(boneName) > -1) {
       console.log(clip.name, 'ignore track', boneName);
       return;
