@@ -1,17 +1,17 @@
-/* global AFRAME THREE */
+/* global AFRAME */
 import './assets/style.css';
 import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 
-const randomColor = () => {
-  return '#' + new THREE.Color(Math.random(), Math.random(), Math.random()).getHexString();
-};
+// const randomColor = () => {
+//   return '#' + new THREE.Color(Math.random(), Math.random(), Math.random()).getHexString();
+// };
 
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
 const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
 const [avatarSrc, setAvatarSrc] = createSignal('');
-const [color, setColor] = createSignal(randomColor());
+// const [color, setColor] = createSignal(randomColor());
 
 const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/';
 const fetchAvatars = async () => {
@@ -41,7 +41,7 @@ const ColorChangerAndUsername = () => {
     if (rig) {
       rig.setAttribute('player-info', {
         name: username(),
-        color: color(),
+        // color: color(),
       });
     }
     localStorage.setItem('username', username());
@@ -63,10 +63,11 @@ const ColorChangerAndUsername = () => {
     });
   });
 
-  let colorChangerBtn, nametagInput;
+  // let colorChangerBtn;
+  let nametagInput;
   return (
     <div>
-      <button
+      {/* <button
         ref={colorChangerBtn}
         id="color-changer"
         class="h-7 w-7"
@@ -76,7 +77,7 @@ const ColorChangerAndUsername = () => {
         }}
       >
         ■
-      </button>
+      </button> */}
 
       <input
         ref={nametagInput}
@@ -118,11 +119,6 @@ const EnterScreen = () => {
         id="playButton"
         class="btn"
         onClick={() => {
-          const rig = document.getElementById('rig');
-          rig.setAttribute('player-info', {
-            name: username(),
-            color: color(),
-          });
           AFRAME.scenes[0].emit('connect');
           setEntered(true);
         }}
