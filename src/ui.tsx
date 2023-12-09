@@ -97,7 +97,7 @@ const ColorChangerAndUsername = () => {
 
 const SettingsScreen = () => {
   return (
-    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-slate-400">
+    <div class="bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2">
       <ColorChangerAndUsername />
       <button
         type="button"
@@ -115,7 +115,7 @@ const SettingsScreen = () => {
 
 const EnterScreen = () => {
   return (
-    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-slate-400">
+    <div class="bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2">
       <ColorChangerAndUsername />
       <button
         type="button"

@@ -1,6 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import './colors.css';
 
 @layer base {
   a {
@@ -13,20 +14,19 @@
 }
 
 @layer components {
-  .btn {
-    @apply inline-block whitespace-nowrap rounded-md border-0 border-slate-950 bg-slate-600 p-2 font-bold text-slate-200 shadow-md transition duration-150 ease-in-out;
+  .bg-panel {
+    background-color: var(--panel-bg);
+  }
 
-    &:focus {
-      @apply outline-none;
-    }
+  .btn {
+    @apply inline-block p-2 font-bold shadow-md transition duration-150 ease-in-out;
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border-radius: var(--btn-border-radius);
 
     &:hover,
     &.hover {
-      @apply bg-slate-700;
-    }
-
-    &:active {
-      @apply bg-slate-800;
+      background-color: var(--btn-primary-bg-hover);
     }
   }
 }
