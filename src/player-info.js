@@ -1,7 +1,5 @@
 /* global AFRAME NAF THREE */
 
-// TODO in the animations the feet are not on the ground
-// TODO document how I created the animations from mixamo.com
 const ANIMATIONS = [
   [
     'Idle',
