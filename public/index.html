@@ -46,14 +46,14 @@
       <a-entity light="type:ambient;intensity:0.5"></a-entity>
 
       <!-- Mirror -->
-      <a-mirror id="mirror" position="0 1.8 -2" scale="5 3 1" layers="0,3">
+      <a-mirror id="mirror" position="0 1.8 -3" scale="5 3 1" layers="0,3">
         <a-box color="black" position="0 0 -0.02" scale="1.02 1.02 0.01"></a-box>
       </a-mirror>
 
       <a-entity
         id="rig"
         movement-controls="fly:false"
-        spawn-in-circle="radius:2"
+        spawn-in-circle="radius:1"
         networked="template:#avatar-template;attachTemplateToLocal:false"
         player-info
       >
