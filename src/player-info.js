@@ -32,7 +32,7 @@ const ANIMATIONS = [
   ],
 ];
 
-const asianModel = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/avatars/Asian/Asian_F_1_Busi.glb';
+// const asianModel = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/avatars/Asian/Asian_F_1_Busi.glb';
 // const defaultModel = asianModel;
 const defaultModel = ''; // none, set via the UI
 const animationsCache = {};
