@@ -63,7 +63,7 @@ const ColorChangerAndUsername = () => {
   // let colorChangerBtn!: HTMLButtonElement;
   let nametagInput!: HTMLInputElement;
   return (
-    <div class="flex flex-col gap-2">
+    <div class="flex w-full max-w-3xl flex-col gap-4 p-4">
       <AvatarSelect avatars={!avatars.loading && avatars() ? avatars() : []} />
       {/* <button
         ref={colorChangerBtn}
@@ -76,18 +76,20 @@ const ColorChangerAndUsername = () => {
       >
         ■
       </button> */}
-      <label class="font-bold" for="username">
-        Your name
-      </label>
-      <input
-        ref={nametagInput}
-        class="h-7 w-48 px-1"
-        id="username"
-        value={username()}
-        oninput={() => {
-          setUsername(nametagInput.value);
-        }}
-      />
+      <div class="flex flex-col gap-2">
+        <label class="font-bold" for="username">
+          Your name
+        </label>
+        <input
+          ref={nametagInput}
+          class="h-7 w-48 px-1"
+          id="username"
+          value={username()}
+          oninput={() => {
+            setUsername(nametagInput.value);
+          }}
+        />
+      </div>
     </div>
   );
 };

@@ -30,24 +30,24 @@ export const AvatarSelect: Component<Props> = (props) => {
   });
 
   return (
-    <>
+    <div class="flex flex-col gap-2">
       <label class="font-bold">Your avatar</label>
 
       <label>Gender</label>
-      <div class="flex items-center gap-6">
-        <label class="flex items-center gap-2">
+      <div class="flex w-full flex-wrap gap-x-6">
+        <label class="flex w-20 items-center gap-2">
           <input type="radio" checked={gender() === 'F'} name="gender" value="F" onClick={() => setGender('F')} />
           <span>Female</span>
         </label>
-        <label class="flex items-center gap-2">
+        <label class="flex w-20 items-center gap-2">
           <input type="radio" checked={gender() === 'M'} name="gender" value="M" onClick={() => setGender('M')} />
           <span>Male</span>
         </label>
       </div>
 
       <label>Outfit</label>
-      <div class="flex items-center gap-6">
-        <label class="flex items-center gap-2">
+      <div class="flex w-full flex-wrap gap-x-6">
+        <label class="flex w-20 items-center gap-2">
           <input
             type="radio"
             checked={outfit() === 'Casual'}
@@ -57,7 +57,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           />
           <span>Casual</span>
         </label>
-        <label class="flex items-center gap-2">
+        <label class="flex w-20 items-center gap-2">
           <input
             type="radio"
             checked={outfit() === 'Busi'}
@@ -67,7 +67,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           />
           <span>Business</span>
         </label>
-        <label class="flex items-center gap-2">
+        <label class="flex w-20 items-center gap-2">
           <input
             type="radio"
             checked={outfit() === 'Medi'}
@@ -77,7 +77,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           />
           <span>Medical</span>
         </label>
-        <label class="flex items-center gap-2">
+        <label class="flex w-20 items-center gap-2">
           <input
             type="radio"
             checked={outfit() === 'Milit'}
@@ -87,7 +87,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           />
           <span>Military</span>
         </label>
-        <label class="flex items-center gap-2">
+        <label class="flex w-20 items-center gap-2">
           <input
             type="radio"
             checked={outfit() === 'Util'}
@@ -99,7 +99,7 @@ export const AvatarSelect: Component<Props> = (props) => {
         </label>
       </div>
 
-      <div class="flex h-52 w-[800px] flex-row flex-nowrap gap-2 overflow-y-hidden overflow-x-scroll">
+      <div class="flex h-52 w-full flex-row flex-nowrap gap-2 overflow-y-hidden overflow-x-scroll">
         <For each={props.avatars}>
           {(avatar, idx) => (
             <Show when={avatar.gender === gender() && avatar.outfit === outfit()}>
@@ -127,6 +127,6 @@ export const AvatarSelect: Component<Props> = (props) => {
           )}
         </For>
       </div>
-    </>
+    </div>
   );
 };
