@@ -26,7 +26,7 @@ const fetchAvatars = async () => {
 };
 
 const [avatars] = createResource(fetchAvatars);
-const [avatarLoading, setAvatarLoading] = createSignal(true);
+export const [avatarLoading, setAvatarLoading] = createSignal(false);
 
 const setRandomAvatar = () => {
   const idx = Math.floor(Math.random() * avatars().length);
@@ -169,16 +169,15 @@ const App = () => {
       setAvatarLoading(false);
     });
   });
-  createEffect((prevAvatarSrc) => {
-    const rig = document.getElementById('rig');
-    // @ts-ignore
-    rig.setAttribute('player-info', {
-      avatarSrc: avatarSrc(),
-    });
-    if (prevAvatarSrc !== avatarSrc()) {
+  createEffect(() => {
+    if (avatarSrc()) {
       setAvatarLoading(true);
+      const rig = document.getElementById('rig');
+      // @ts-ignore
+      rig.setAttribute('player-info', {
+        avatarSrc: avatarSrc(),
+      });
     }
-    return prevAvatarSrc;
   });
 
   return (

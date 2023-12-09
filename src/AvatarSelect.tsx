@@ -1,5 +1,5 @@
 import { Component, For, Show, createEffect, createSignal } from 'solid-js';
-import { avatarSrc, avatarsBaseUrl, setAvatarSrc } from './ui';
+import { avatarLoading, avatarSrc, avatarsBaseUrl, setAvatarSrc } from './ui';
 
 interface Avatar {
   text: string;
@@ -103,9 +103,10 @@ export const AvatarSelect: Component<Props> = (props) => {
         <For each={props.avatars}>
           {(avatar, idx) => (
             <Show when={avatar.gender === gender() && avatar.outfit === outfit()}>
-              <div
+              <button
                 id={`avatar-${idx()}`}
                 class="relative h-52 w-52 shrink-0 cursor-pointer"
+                disabled={avatarLoading()}
                 onClick={() => {
                   setAvatarSrc(avatarsBaseUrl + avatar.model);
                 }}
@@ -122,7 +123,7 @@ export const AvatarSelect: Component<Props> = (props) => {
                   class="absolute inset-0 bg-white/30 backdrop-brightness-125"
                   classList={{ hidden: avatarSrc().endsWith(avatar.model) }}
                 ></div>
-              </div>
+              </button>
             </Show>
           )}
         </For>
