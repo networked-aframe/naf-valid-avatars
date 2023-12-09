@@ -209,10 +209,6 @@ AFRAME.registerComponent('player-info', {
       // window.mesh = this.mesh;
       // window.model = model;
 
-      // if (this.nametagEl) {
-      //   this.nametagEl.object3D.position.y = 1.8 + 0.16;
-      // }
-
       const callback = () => {
         this.setAnimationFromState();
         this.mixer = this.getAnimationMixer();
