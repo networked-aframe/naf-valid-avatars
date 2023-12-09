@@ -29,6 +29,24 @@ const fetchAvatars = async () => {
   return results;
 };
 
+const [avatars] = createResource(fetchAvatars);
+const [avatarLoading, setAvatarLoading] = createSignal(true);
+const rig = document.getElementById('rig');
+rig?.addEventListener('model-loaded', () => {
+  setAvatarLoading(false);
+});
+
+const setRandomAvatar = () => {
+  const random = Math.floor(Math.random() * avatars().length);
+  setAvatarSrc(avatarsBaseUrl + avatars()[random].model);
+  const rig = document.getElementById('rig');
+  setAvatarLoading(true);
+  // @ts-ignore
+  rig?.setAttribute('player-info', {
+    avatarSrc: avatarSrc(),
+  });
+};
+
 const ColorChangerAndUsername = () => {
   onMount(() => {
     const name = localStorage.getItem('username');
@@ -39,32 +57,27 @@ const ColorChangerAndUsername = () => {
 
   createEffect(() => {
     const rig = document.getElementById('rig');
-    if (rig) {
-      // @ts-ignore
-      rig.setAttribute('player-info', {
-        name: username(),
-        // color: color(),
-      });
-    }
+    // @ts-ignore
+    rig?.setAttribute('player-info', {
+      name: username(),
+      // color: color(),
+    });
     localStorage.setItem('username', username());
   });
 
-  const [avatars] = createResource(fetchAvatars);
-
   createEffect(() => {
-    if (!avatars.loading && avatars() && avatars().length > 0) {
-      const random = Math.floor(Math.random() * avatars().length);
-      setAvatarSrc(avatarsBaseUrl + avatars()[random].model);
+    if (!avatarSrc() && !avatars.loading && avatars() && avatars().length > 0) {
+      setRandomAvatar();
     }
   });
 
-  createEffect(() => {
-    const rig = document.getElementById('rig');
-    // @ts-ignore
-    rig.setAttribute('player-info', {
-      avatarSrc: avatarSrc(),
-    });
-  });
+  // createEffect(() => {
+  //   const rig = document.getElementById('rig');
+  //   // @ts-ignore
+  //   rig.setAttribute('player-info', {
+  //     avatarSrc: avatarSrc(),
+  //   });
+  // });
 
   // let colorChangerBtn!: HTMLButtonElement;
   let nametagInput!: HTMLInputElement;
@@ -145,6 +158,16 @@ const BottomBar = () => {
         }}
       >
         Settings
+      </button>
+      <button
+        type="button"
+        class="btn text-sm"
+        onClick={() => {
+          setRandomAvatar();
+        }}
+        disabled={!(!avatars.loading && avatars() && avatars().length > 0) || avatarLoading()}
+      >
+        Random avatar
       </button>
     </div>
   );
