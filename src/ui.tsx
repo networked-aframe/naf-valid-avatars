@@ -2,6 +2,7 @@
 import './assets/style.css';
 import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
+import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
 
 // const randomColor = () => {
 //   // @ts-ignore
@@ -11,40 +12,28 @@ import { Show, createEffect, createResource, createSignal, onMount } from 'solid
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
 const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
-const [avatarSrc, setAvatarSrc] = createSignal('');
+export const [avatarSrc, setAvatarSrc] = createSignal('');
 // const [color, setColor] = createSignal(randomColor());
 
-const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/';
+export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@f8dee64/';
 const fetchAvatars = async () => {
   const response = await fetch(avatarsBaseUrl + 'avatars.json');
   if (!response.ok) {
     return [];
   }
   const results = await response.json();
-  // console.log(results);
-  // results.forEach((entry) => {
-  //   console.log(avatarsBaseUrl + entry.image);
-  //   console.log(avatarsBaseUrl + entry.model);
-  // });
   return results;
 };
 
 const [avatars] = createResource(fetchAvatars);
 const [avatarLoading, setAvatarLoading] = createSignal(true);
-const rig = document.getElementById('rig');
-rig?.addEventListener('model-loaded', () => {
-  setAvatarLoading(false);
-});
 
 const setRandomAvatar = () => {
-  const random = Math.floor(Math.random() * avatars().length);
-  setAvatarSrc(avatarsBaseUrl + avatars()[random].model);
-  const rig = document.getElementById('rig');
-  setAvatarLoading(true);
-  // @ts-ignore
-  rig?.setAttribute('player-info', {
-    avatarSrc: avatarSrc(),
-  });
+  const idx = Math.floor(Math.random() * avatars().length);
+  const avatar = avatars()[idx];
+  setAvatarSrc(avatarsBaseUrl + avatar.model);
+  setOutfit(avatar.outfit);
+  setGender(avatar.gender);
 };
 
 const ColorChangerAndUsername = () => {
@@ -65,24 +54,17 @@ const ColorChangerAndUsername = () => {
     localStorage.setItem('username', username());
   });
 
-  createEffect(() => {
-    if (!avatarSrc() && !avatars.loading && avatars() && avatars().length > 0) {
-      setRandomAvatar();
-    }
-  });
-
   // createEffect(() => {
-  //   const rig = document.getElementById('rig');
-  //   // @ts-ignore
-  //   rig.setAttribute('player-info', {
-  //     avatarSrc: avatarSrc(),
-  //   });
+  //   if (!avatarSrc() && !avatars.loading && avatars() && avatars().length > 0) {
+  //     setRandomAvatar();
+  //   }
   // });
 
   // let colorChangerBtn!: HTMLButtonElement;
   let nametagInput!: HTMLInputElement;
   return (
-    <div>
+    <div class="flex flex-col gap-2">
+      <AvatarSelect avatars={!avatars.loading && avatars() ? avatars() : []} />
       {/* <button
         ref={colorChangerBtn}
         id="color-changer"
@@ -94,11 +76,13 @@ const ColorChangerAndUsername = () => {
       >
         ■
       </button> */}
-
+      <label class="font-bold" for="username">
+        Your name
+      </label>
       <input
         ref={nametagInput}
-        class="h-7 px-1"
-        id="username-overlay"
+        class="h-7 w-48 px-1"
+        id="username"
         value={username()}
         oninput={() => {
           setUsername(nametagInput.value);
@@ -135,6 +119,9 @@ const EnterScreen = () => {
         id="playButton"
         class="btn"
         onClick={() => {
+          if (!avatarSrc()) {
+            setRandomAvatar();
+          }
           // @ts-ignore
           AFRAME.scenes[0].emit('connect');
           setEntered(true);
@@ -174,6 +161,24 @@ const BottomBar = () => {
 };
 
 const App = () => {
+  onMount(() => {
+    const rig = document.getElementById('rig');
+    rig?.addEventListener('model-loaded', () => {
+      setAvatarLoading(false);
+    });
+  });
+  createEffect((prevAvatarSrc) => {
+    const rig = document.getElementById('rig');
+    // @ts-ignore
+    rig.setAttribute('player-info', {
+      avatarSrc: avatarSrc(),
+    });
+    if (prevAvatarSrc !== avatarSrc()) {
+      setAvatarLoading(true);
+    }
+    return prevAvatarSrc;
+  });
+
   return (
     <>
       <Show when={!entered()}>
