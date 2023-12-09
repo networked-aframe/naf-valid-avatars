@@ -188,7 +188,7 @@ AFRAME.registerComponent('player-info', {
       // from movement-controls
       this.positionChanged();
     },
-    'model-loaded': async function (evt) {
+    'model-loaded': function (evt) {
       if (this.el.id === 'rig') {
         // Hide my own avatar
         // this.avatarEl.object3D.visible = false;
@@ -219,37 +219,45 @@ AFRAME.registerComponent('player-info', {
       };
       const isWoman = false;
       const cacheKey = `${isWoman}`;
-      if (animationsCache[cacheKey]) {
-        model.animations = Array.from(animationsCache[cacheKey]);
+      animationsCache[cacheKey] = animationsCache[cacheKey] || {};
+      if (animationsCache[cacheKey].animations) {
+        model.animations = Array.from(animationsCache[cacheKey].animations);
         callback();
         return;
       }
 
-      // We can still load the animations several times if two avatars connect quickly to the room
-      // TODO load the animations in a Promise and reuse the promise for others avatars
+      if (!animationsCache[cacheKey].promise) {
+        const promise = new Promise((resolve, reject) => {
+          (async () => {
+            for (let [animationName, url, options] of ANIMATIONS) {
+              const loader = url.indexOf('.glb') > -1 ? this.glbLoader : this.fbxLoader;
+              options = options ?? {};
+              const asset = await loader.loadAsync(url);
+              const clip = asset.animations[0];
+              let newClip = clip;
+              clip.name = animationName;
+              newClip = simpleRetargetClip(this.mesh, clip, {
+                hip: 'Hips',
+                names: { Reference: 'Armature' },
+                offsets: options.quatOffsets ?? {},
+                positionMultiplier: options.positionMultiplier ?? 1.0,
+                ignoreBones: options.ignoreBones ?? [],
+                removeHipsForwardAnimation: options.removeHipsForwardAnimation ?? false,
+              });
+              console.log('retargeted', clip.name, 'renamed to', animationName);
+              model.animations.push(newClip);
+              console.log('animation after conversion', newClip);
+            }
 
-      for (let [animationName, url, options] of ANIMATIONS) {
-        const loader = url.indexOf('.glb') > -1 ? this.glbLoader : this.fbxLoader;
-        options = options ?? {};
-        const asset = await loader.loadAsync(url);
-        const clip = asset.animations[0];
-        let newClip = clip;
-        clip.name = animationName;
-        newClip = simpleRetargetClip(this.mesh, clip, {
-          hip: 'Hips',
-          names: { Reference: 'Armature' },
-          offsets: options.quatOffsets ?? {},
-          positionMultiplier: options.positionMultiplier ?? 1.0,
-          ignoreBones: options.ignoreBones ?? [],
-          removeHipsForwardAnimation: options.removeHipsForwardAnimation ?? false,
+            animationsCache[cacheKey].animations = Array.from(model.animations);
+            resolve();
+          })();
         });
-        console.log('retargeted', clip.name, 'renamed to', animationName);
-        model.animations.push(newClip);
-        console.log('animation after conversion', newClip);
+        animationsCache[cacheKey].promise = promise;
       }
-
-      animationsCache[cacheKey] = Array.from(model.animations);
-      callback();
+      animationsCache[cacheKey].promise.then(callback).catch(() => {
+        console.error('Error loading the animations');
+      });
     },
   },
 });
