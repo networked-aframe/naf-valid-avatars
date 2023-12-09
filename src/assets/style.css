@@ -3,6 +3,16 @@
 @import 'tailwindcss/utilities';
 @import './colors.css';
 
+body {
+  @apply text-slate-200;
+}
+
+input,
+select,
+textarea {
+  @apply text-gray-900;
+}
+
 @layer base {
   a {
     @apply text-sky-800;
