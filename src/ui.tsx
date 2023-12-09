@@ -4,6 +4,7 @@ import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 
 // const randomColor = () => {
+//   // @ts-ignore
 //   return '#' + new THREE.Color(Math.random(), Math.random(), Math.random()).getHexString();
 // };
 
@@ -39,6 +40,7 @@ const ColorChangerAndUsername = () => {
   createEffect(() => {
     const rig = document.getElementById('rig');
     if (rig) {
+      // @ts-ignore
       rig.setAttribute('player-info', {
         name: username(),
         // color: color(),
@@ -58,13 +60,14 @@ const ColorChangerAndUsername = () => {
 
   createEffect(() => {
     const rig = document.getElementById('rig');
+    // @ts-ignore
     rig.setAttribute('player-info', {
       avatarSrc: avatarSrc(),
     });
   });
 
-  // let colorChangerBtn;
-  let nametagInput;
+  // let colorChangerBtn!: HTMLButtonElement;
+  let nametagInput!: HTMLInputElement;
   return (
     <div>
       {/* <button
@@ -119,6 +122,7 @@ const EnterScreen = () => {
         id="playButton"
         class="btn"
         onClick={() => {
+          // @ts-ignore
           AFRAME.scenes[0].emit('connect');
           setEntered(true);
         }}

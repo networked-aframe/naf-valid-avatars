@@ -20,13 +20,13 @@
 
   <body>
     <a-scene
+      renderer="physicallyCorrectLights:true;colorManagement:true"
       networked-scene="
         connectOnLoad: false;
         room: nametag;
         debug: true;
         adapter: wseasyrtc;
     "
-      renderer="physicallyCorrectLights:true;colorManagement:true"
       shadow="type: pcfsoft"
       gltf-model="meshoptDecoderPath:https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"
     >

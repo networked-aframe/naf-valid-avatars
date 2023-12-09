@@ -5,8 +5,7 @@ The [GitHub repo](https://github.com/networked-aframe/naf-nametag-solidjs) is sy
 This is the NAF nametag example but with a UI to enter the room written with [SolidJS](https://www.solidjs.com/) and [Tailwind CSS](https://tailwindcss.com/). It contains all the configurations files to develop the UI with [VS code](https://code.visualstudio.com/): webpack, tailwindcss with postcss, prettier, eslint, tsconfig for solid-js.
 In VS code, be sure to install the following addons: Prettier - Code formatter, ESLint, Tailwind CSS IntelliSense.
 
-See the src folder how the UI works. Typescript is not enabled in this example for simplicity.
-You can rename ui.js to ui.tsx (and modify the path in webpack.config.js) if you want to use typescript.
+See the src folder how the UI works.
 
 For the app to run on glitch for development, we used in `package.json`:
 

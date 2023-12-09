@@ -15,6 +15,7 @@
     "prettier": "prettier --write 'src/**/*.js' 'src/**/*.ts?'"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.2",
     "networked-aframe": "^0.11.0",
     "solid-js": "^1.8.5"
   },
@@ -31,6 +32,7 @@
     "express"
   ],
   "devDependencies": {
+    "@babel/preset-typescript": "^7.23.3",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
     "autoprefixer": "^10.4.16",

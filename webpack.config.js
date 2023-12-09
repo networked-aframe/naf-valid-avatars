@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: {
     components: './src/components.js',
-    ui: './src/ui.js',
+    ui: './src/ui.tsx',
   },
   output: {
     libraryTarget: 'umd',
@@ -17,6 +17,9 @@ module.exports = {
   },
   devtool: 'source-map',
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+  },
   module: {
     rules: [
       {
@@ -25,7 +28,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['solid'],
+            presets: ['@babel/preset-typescript', 'solid'],
             env: {
               development: {
                 plugins: [['solid-refresh/babel', { bundler: 'webpack5' }]],
