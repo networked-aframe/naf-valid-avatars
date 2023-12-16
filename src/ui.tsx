@@ -15,7 +15,7 @@ const [username, setUsername] = createSignal('user-' + Math.round(Math.random() 
 export const [avatarSrc, setAvatarSrc] = createSignal('');
 // const [color, setColor] = createSignal(randomColor());
 
-export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@f8dee64/';
+export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@c539a28/';
 const fetchAvatars = async () => {
   const response = await fetch(avatarsBaseUrl + 'avatars.json');
   if (!response.ok) {
