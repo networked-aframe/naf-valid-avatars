@@ -24,8 +24,11 @@ export const AvatarSelect: Component<Props> = (props) => {
       const idx = props.avatars.findIndex((avatar) => avatarSrc().endsWith(avatar.model));
       if (idx === -1) return;
       const id = `avatar-${idx}`;
-      const el = document.getElementById(id);
-      el?.scrollIntoView();
+
+      queueMicrotask(() => {
+        const el = document.getElementById(id);
+        el?.scrollIntoView();
+      });
     }
   });
 
