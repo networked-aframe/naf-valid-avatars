@@ -269,6 +269,7 @@ AFRAME.registerComponent('player-info', {
       // window.model = model;
 
       const callback = () => {
+        model.animations = Array.from(animationsCache[cacheKey].animations);
         this.setAnimationFromState();
         this.mixer = this.getAnimationMixer();
       };
@@ -276,7 +277,6 @@ AFRAME.registerComponent('player-info', {
       const cacheKey = `valid-${isWoman}`;
       animationsCache[cacheKey] = animationsCache[cacheKey] || {};
       if (animationsCache[cacheKey].animations) {
-        model.animations = Array.from(animationsCache[cacheKey].animations);
         callback();
         return;
       }
@@ -285,6 +285,7 @@ AFRAME.registerComponent('player-info', {
         const promise = new Promise((resolve, reject) => {
           (async () => {
             const animations = isWoman ? ANIMATIONS_WOMAN : ANIMATIONS_MAN;
+            const convertedAnimations = [];
             for (let [animationName, url, options] of animations) {
               const loader = url.indexOf('.glb') > -1 ? this.glbLoader : this.fbxLoader;
               options = options ?? {};
@@ -302,11 +303,11 @@ AFRAME.registerComponent('player-info', {
                 removeHipsForwardAnimation: options.removeHipsForwardAnimation ?? false,
               });
               console.log('retargeted', clip.name, 'renamed to', animationName);
-              model.animations.push(newClip);
+              convertedAnimations.push(newClip);
               console.log('animation after conversion', newClip);
             }
 
-            animationsCache[cacheKey].animations = Array.from(model.animations);
+            animationsCache[cacheKey].animations = convertedAnimations;
             resolve();
           })();
         });
