@@ -7,7 +7,15 @@ const ANIMATIONS = [
     {
       // quatOffsets: getQuatOffsetsFromEulers({ Neck: [3, 4, 0] }), // add small rotation right down on Neck so that idle animation look at me and not the ground
       quatOffsets: getQuatOffsetsFromEulers({ Neck: [-1, 0, 4] }), // 2nd value positive tilt right, 3rd value positive move head back
-      ignoreBones: ['Spine2'],
+      ignoreBones: [
+        'Spine2',
+        'LeftEye',
+        'LeftEye_end',
+        'LeftEye_end_end',
+        'RightEye',
+        'RightEye_end',
+        'RightEye_end_end',
+      ],
       positionMultiplier: 0.01,
       positionOffset: -0.168,
     },
@@ -18,7 +26,17 @@ const ANIMATIONS = [
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
       // ignoreBones: ["Spine1", "Spine2", "Neck", "Head"],
-      ignoreBones: ['Spine2', 'Neck', 'Head'],
+      ignoreBones: [
+        'Spine2',
+        'Neck',
+        'Head',
+        'LeftEye',
+        'LeftEye_end',
+        'LeftEye_end_end',
+        'RightEye',
+        'RightEye_end',
+        'RightEye_end_end',
+      ],
       positionMultiplier: 0.01,
       positionOffset: -0.168,
     },
@@ -28,6 +46,7 @@ const ANIMATIONS = [
     'Walking',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/Walking.fbx?v=1701432532423',
     {
+      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
       positionMultiplier: 0.01,
       positionOffset: -0.168,
       removeHipsForwardAnimation: true,
