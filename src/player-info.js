@@ -252,6 +252,11 @@ AFRAME.registerComponent('player-info', {
           obj.layers.enable(3);
         });
       }
+      this.avatarEl.object3D.traverse((obj) => {
+        if (obj.isMesh) {
+          obj.frustumCulled = false;
+        }
+      });
 
       const model = evt.detail.model;
       // Original fbx avatar has master->Reference->H_DDS_HighRes
