@@ -9,6 +9,7 @@ const ANIMATIONS = [
       quatOffsets: getQuatOffsetsFromEulers({ Neck: [-1, 0, 4] }), // 2nd value positive tilt right, 3rd value positive move head back
       ignoreBones: ['Spine2'],
       positionMultiplier: 0.01,
+      positionOffset: -0.168,
     },
   ],
 
@@ -19,6 +20,7 @@ const ANIMATIONS = [
       // ignoreBones: ["Spine1", "Spine2", "Neck", "Head"],
       ignoreBones: ['Spine2', 'Neck', 'Head'],
       positionMultiplier: 0.01,
+      positionOffset: -0.168,
     },
   ],
 
@@ -27,6 +29,7 @@ const ANIMATIONS = [
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/Walking.fbx?v=1701432532423',
     {
       positionMultiplier: 0.01,
+      positionOffset: -0.168,
       removeHipsForwardAnimation: true,
     },
   ],
@@ -237,6 +240,7 @@ AFRAME.registerComponent('player-info', {
                 names: { Reference: 'Armature' },
                 offsets: options.quatOffsets ?? {},
                 positionMultiplier: options.positionMultiplier ?? 1.0,
+                positionOffset: options.positionOffset ?? 0,
                 ignoreBones: options.ignoreBones ?? [],
                 removeHipsForwardAnimation: options.removeHipsForwardAnimation ?? false,
               });
@@ -275,6 +279,7 @@ function simpleRetargetClip(target, clip, options = {}) {
   const inverseBones = options.inverseBones ?? false;
   const ignoreBones = options.ignoreBones ?? [];
   const removeHipsForwardAnimation = options.removeHipsForwardAnimation ?? false;
+  const positionOffset = options.positionOffset ?? 0;
   const tracks = [];
   const quat = new THREE.Quaternion();
 
@@ -298,6 +303,9 @@ function simpleRetargetClip(target, clip, options = {}) {
           v = v * positionMultiplier;
           if (removeHipsForwardAnimation && i % 3 === 1) {
             v = 0;
+          }
+          if (positionOffset !== 0 && i % 3 === 2) {
+            v += positionOffset;
           }
           return v;
         }),
