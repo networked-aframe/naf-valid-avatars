@@ -1,6 +1,60 @@
 /* global AFRAME NAF THREE */
 
-const ANIMATIONS = [
+const ANIMATIONS_MAN = [
+  [
+    'Idle',
+    'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
+    {
+      // quatOffsets: getQuatOffsetsFromEulers({ Neck: [3, 4, 0] }), // add small rotation right down on Neck so that idle animation look at me and not the ground
+      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-1, 0, 4] }), // 2nd value positive tilt right, 3rd value positive move head back
+      ignoreBones: [
+        'Spine2',
+        'LeftEye',
+        'LeftEye_end',
+        'LeftEye_end_end',
+        'RightEye',
+        'RightEye_end',
+        'RightEye_end_end',
+      ],
+      positionMultiplier: 0.01,
+      positionOffset: -0.1,
+    },
+  ],
+
+  [
+    'IdleIgnoreNeck',
+    'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
+    {
+      // ignoreBones: ["Spine1", "Spine2", "Neck", "Head"],
+      ignoreBones: [
+        'Spine2',
+        'Neck',
+        'Head',
+        'LeftEye',
+        'LeftEye_end',
+        'LeftEye_end_end',
+        'RightEye',
+        'RightEye_end',
+        'RightEye_end_end',
+      ],
+      positionMultiplier: 0.01,
+      positionOffset: -0.1,
+    },
+  ],
+
+  [
+    'Walking',
+    'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/Walking.fbx?v=1701432532423',
+    {
+      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
+      positionMultiplier: 0.01,
+      positionOffset: -0.1,
+      removeHipsForwardAnimation: true,
+    },
+  ],
+];
+
+const ANIMATIONS_WOMAN = [
   [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
@@ -235,8 +289,8 @@ AFRAME.registerComponent('player-info', {
         this.setAnimationFromState();
         this.mixer = this.getAnimationMixer();
       };
-      const isWoman = false;
-      const cacheKey = `${isWoman}`;
+      const isWoman = this.data.avatarSrc.indexOf('_F_') > -1;
+      const cacheKey = `valid-${isWoman}`;
       animationsCache[cacheKey] = animationsCache[cacheKey] || {};
       if (animationsCache[cacheKey].animations) {
         model.animations = Array.from(animationsCache[cacheKey].animations);
@@ -247,7 +301,8 @@ AFRAME.registerComponent('player-info', {
       if (!animationsCache[cacheKey].promise) {
         const promise = new Promise((resolve, reject) => {
           (async () => {
-            for (let [animationName, url, options] of ANIMATIONS) {
+            const animations = isWoman ? ANIMATIONS_WOMAN : ANIMATIONS_MAN;
+            for (let [animationName, url, options] of animations) {
               const loader = url.indexOf('.glb') > -1 ? this.glbLoader : this.fbxLoader;
               options = options ?? {};
               const asset = await loader.loadAsync(url);
