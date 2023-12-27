@@ -5,17 +5,8 @@ const ANIMATIONS_MAN = [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
-      // quatOffsets: getQuatOffsetsFromEulers({ Neck: [3, 4, 0] }), // add small rotation right down on Neck so that idle animation look at me and not the ground
-      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-1, 0, 4] }), // 2nd value positive tilt right, 3rd value positive move head back
-      ignoreBones: [
-        'Spine2',
-        'LeftEye',
-        'LeftEye_end',
-        'LeftEye_end_end',
-        'RightEye',
-        'RightEye_end',
-        'RightEye_end_end',
-      ],
+      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-3, 0, 4] }),
+      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
       positionMultiplier: 0.01,
       positionOffset: -0.1,
     },
@@ -25,9 +16,7 @@ const ANIMATIONS_MAN = [
     'IdleIgnoreNeck',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
-      // ignoreBones: ["Spine1", "Spine2", "Neck", "Head"],
       ignoreBones: [
-        'Spine2',
         'Neck',
         'Head',
         'LeftEye',
@@ -59,17 +48,8 @@ const ANIMATIONS_WOMAN = [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
-      // quatOffsets: getQuatOffsetsFromEulers({ Neck: [3, 4, 0] }), // add small rotation right down on Neck so that idle animation look at me and not the ground
-      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-1, 0, 4] }), // 2nd value positive tilt right, 3rd value positive move head back
-      ignoreBones: [
-        'Spine2',
-        'LeftEye',
-        'LeftEye_end',
-        'LeftEye_end_end',
-        'RightEye',
-        'RightEye_end',
-        'RightEye_end_end',
-      ],
+      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-3, 0, 4] }),
+      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
       positionMultiplier: 0.01,
       positionOffset: -0.168,
     },
@@ -79,9 +59,7 @@ const ANIMATIONS_WOMAN = [
     'IdleIgnoreNeck',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
-      // ignoreBones: ["Spine1", "Spine2", "Neck", "Head"],
       ignoreBones: [
-        'Spine2',
         'Neck',
         'Head',
         'LeftEye',
