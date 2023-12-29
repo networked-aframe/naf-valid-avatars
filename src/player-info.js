@@ -41,6 +41,16 @@ const ANIMATIONS_MAN = [
       removeHipsForwardAnimation: true,
     },
   ],
+
+  [
+    'Dying',
+    'https://cdn.glitch.global/3e6e78f9-b796-4cf3-8451-2fcba6103a3c/Dying.fbx?v=1703867995062',
+    {
+      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
+      positionMultiplier: 0.01,
+      positionOffset: 0,
+    },
+  ],
 ];
 
 const ANIMATIONS_WOMAN = [
@@ -82,6 +92,16 @@ const ANIMATIONS_WOMAN = [
       positionMultiplier: 0.01,
       positionOffset: -0.168,
       removeHipsForwardAnimation: true,
+    },
+  ],
+
+  [
+    'Dying',
+    'https://cdn.glitch.global/3e6e78f9-b796-4cf3-8451-2fcba6103a3c/Dying.fbx?v=1703867995062',
+    {
+      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
+      positionMultiplier: 0.01,
+      positionOffset: 0,
     },
   ],
 ];

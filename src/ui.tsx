@@ -158,6 +158,16 @@ const BottomBar = () => {
       >
         Random avatar
       </button>
+      <button
+        type="button"
+        class="btn text-sm"
+        onClick={() => {
+          // @ts-ignore
+          document.getElementById('rig').setAttribute('player-info', 'state', 'Dying');
+        }}
+      >
+        Die
+      </button>
     </div>
   );
 };
