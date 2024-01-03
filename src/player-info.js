@@ -5,18 +5,9 @@ const ANIMATIONS_MAN = [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
-      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-3, 0, 4] }),
-      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
-      positionMultiplier: 0.01,
-      positionOffset: -0.1,
-    },
-  ],
-
-  [
-    'IdleIgnoreNeck',
-    'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
-    {
       ignoreBones: [
+        'Spine1',
+        'Spine2',
         'Neck',
         'Head',
         'LeftEye',
@@ -58,18 +49,9 @@ const ANIMATIONS_WOMAN = [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
-      quatOffsets: getQuatOffsetsFromEulers({ Neck: [-3, 0, 4] }),
-      ignoreBones: ['LeftEye', 'LeftEye_end', 'LeftEye_end_end', 'RightEye', 'RightEye_end', 'RightEye_end_end'],
-      positionMultiplier: 0.01,
-      positionOffset: -0.168,
-    },
-  ],
-
-  [
-    'IdleIgnoreNeck',
-    'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
-    {
       ignoreBones: [
+        'Spine1',
+        'Spine2',
         'Neck',
         'Head',
         'LeftEye',
@@ -141,8 +123,129 @@ NAF.schemas.getComponents = (template) => {
   return components;
 };
 
+const y180Quaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+
+const truncate = (num) => Math.round(num * 100) / 100;
+
 // To sync head in VR
-AFRAME.registerComponent('avatar-bones', {});
+AFRAME.registerComponent('avatar-bones', {
+  schema: {
+    // Neck: { type: 'vec4' },
+    Head: { type: 'vec4' },
+  },
+  init: function () {
+    const MODE_LERP = 0;
+    if (this.el.id !== 'rig') {
+      // this.neckBuffer = new NAF.InterpolationBuffer(MODE_LERP, 0.1);
+      this.headBuffer = new NAF.InterpolationBuffer(MODE_LERP, 0.1);
+    }
+    this.localEuler = new THREE.Euler();
+    this.localQuaternion = new THREE.Quaternion();
+    this.localQuaternion2 = new THREE.Quaternion();
+    this.localQuaternion3 = new THREE.Quaternion();
+    this.tmpQuaternion = new THREE.Quaternion();
+    this.transitionQuaternionStart = new THREE.Quaternion();
+    this.transitionQuaternionEnd = new THREE.Quaternion();
+    this.prevTime = 0;
+    this.transitionProgress = 1;
+  },
+  events: {
+    'model-loaded': function () {
+      // If we switch the avatar, reset mesh to retrieve the bones of the new avatar
+      queueMicrotask(() => {
+        // Execute this after the model-loaded listener from player-info
+        this.mesh = this.el.components['player-info'].mesh;
+        if (this.mesh) {
+          const bones = this.mesh.skeleton.bones;
+          this.hips = getBoneByName('Hips', bones);
+          this.spine = getBoneByName('Spine', bones);
+          this.spine1 = getBoneByName('Spine1', bones);
+          this.spine2 = getBoneByName('Spine2', bones);
+          this.neck = getBoneByName('Neck', bones);
+          this.head = getBoneByName('Head', bones);
+          // this.mesh.skeleton.pose();
+          // save quaternion of some bones of the default pose before an animation is played on the avatar
+          this.spine1quaternion = new THREE.Quaternion().copy(this.spine1.quaternion);
+          this.spine2quaternion = new THREE.Quaternion().copy(this.spine2.quaternion);
+          this.neckquaternion = new THREE.Quaternion().copy(this.neck.quaternion);
+        }
+      });
+    },
+  },
+  update: function (oldData) {
+    if (this.el.id === 'rig') {
+      // if (this.neck) this.neck.quaternion.copy(this.data.Neck);
+      // if (this.head) this.neck.quaternion.copy(this.data.Head);
+    } else {
+      // this.neckBuffer.setQuaternion(this.data.Neck);
+      this.headBuffer.setQuaternion(this.data.Head);
+    }
+  },
+  tick: function (time, dt) {
+    if (this.el.id === 'rig') {
+      if (this.head) {
+        const camera = this.el.components['player-info'].cameraEl?.object3D;
+        const avatarQuaternion = this.el.components['player-info'].avatarEl.object3D.quaternion;
+        const hmdQuaternion = this.localQuaternion.copy(camera.quaternion).multiply(y180Quaternion);
+
+        const hmdEuler = this.localEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
+        hmdEuler.x = 0;
+        hmdEuler.z = 0;
+        const hmdXYRotation = this.localQuaternion2.setFromEuler(hmdEuler);
+
+        const angle = avatarQuaternion.angleTo(hmdXYRotation);
+        if (angle > 0.5 || time - this.prevTime > 2000) {
+          // If more than 28 degrees, move the avatar, otherwise just move the head
+          // avatarQuaternion.copy(hmdXYRotation);
+          this.transitionProgress = 0;
+          this.transitionQuaternionStart.copy(avatarQuaternion);
+          this.transitionQuaternionEnd.copy(hmdXYRotation);
+          this.prevTime = time;
+        }
+
+        if (this.transitionProgress < 1) {
+          this.transitionProgress += dt * 0.006;
+          avatarQuaternion.slerpQuaternions(
+            this.transitionQuaternionStart,
+            this.transitionQuaternionEnd,
+            this.transitionProgress,
+          );
+        }
+
+        if (this.el.components['player-info'].data.state !== 'Idle') return;
+
+        this.spine1.quaternion.copy(this.spine1quaternion);
+        this.spine2.quaternion.copy(this.spine2quaternion);
+        this.neck.quaternion.copy(this.neckquaternion);
+
+        this.head.quaternion.copy(hmdQuaternion).premultiply(this.localQuaternion3.copy(avatarQuaternion).invert());
+        // x and z rotation is inversed
+        const tmp = this.head.rotation.z;
+        this.head.rotation.z = -this.head.rotation.x;
+        this.head.rotation.x = tmp;
+        this.head.rotation.y -= 0.3;
+        this.head.rotation.z = Math.max(-1, Math.min(0.7, this.head.rotation.z));
+        this.head.rotation.x = Math.max(-1, Math.min(1, this.head.rotation.x));
+        // The networked schema will use deepEqual in defaultRequiresUpdate for the requiresNetworkUpdate function,
+        // so we truncate to 0.01 decimal, this prevent sending the info every 66ms if not much changed (more or less 0.5 degrees)
+        this.data.Head.x = truncate(this.head.quaternion.x);
+        this.data.Head.y = truncate(this.head.quaternion.y);
+        this.data.Head.z = truncate(this.head.quaternion.z);
+        this.data.Head.w = truncate(this.head.quaternion.w);
+      }
+    } else {
+      if (this.el.components['player-info'].data.state !== 'Idle') return;
+      if (this.spine1) this.spine1.quaternion.copy(this.spine1quaternion);
+      if (this.spine2) this.spine2.quaternion.copy(this.spine2quaternion);
+      if (this.neck) this.neck.quaternion.copy(this.neckquaternion);
+
+      // this.neckBuffer.update(dt);
+      // if (this.neck) this.neck.quaternion.copy(this.neckBuffer.getQuaternion());
+      this.headBuffer.update(dt);
+      if (this.head) this.head.quaternion.copy(this.headBuffer.getQuaternion());
+    }
+  },
+});
 
 AFRAME.registerComponent('player-info', {
   dependencies: ['avatar-bones'],
@@ -204,8 +307,8 @@ AFRAME.registerComponent('player-info', {
 
   tick: function (t) {
     if (this.el.id === 'rig' && this.cameraEl && this.avatarEl) {
-      const cameraRot = this.cameraEl.object3D.rotation;
-      this.avatarEl.object3D.rotation.set(0, cameraRot.y + Math.PI, 0);
+      // const cameraRot = this.cameraEl.object3D.rotation;
+      // this.avatarEl.object3D.rotation.set(0, cameraRot.y + Math.PI, 0);
     }
     if (this.mesh) {
       const morphTargetDictionary = this.mesh.morphTargetDictionary;

@@ -1,5 +1,6 @@
 /* eslint-disable */
 declare var NAF: {
+  InterpolationBuffer: any;
   clientId: string;
   connection: {
     adapter?: {
