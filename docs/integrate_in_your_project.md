@@ -60,6 +60,6 @@ You can create your own UI to select the avatar. To set the avatar model and nam
 const rig = document.getElementById('rig');
 rig.setAttribute('player-info', {
   name: 'John',
-  avatarSrc: 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@489c8aa/avatars/Asian/Asian_F_1_Busi.glb',
+  avatarSrc: 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@c539a28/avatars/Asian/Asian_F_1_Busi.glb',
 });
 ```
