@@ -4,16 +4,10 @@ import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
 
-// const randomColor = () => {
-//   // @ts-ignore
-//   return '#' + new THREE.Color(Math.random(), Math.random(), Math.random()).getHexString();
-// };
-
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
 const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
 export const [avatarSrc, setAvatarSrc] = createSignal('');
-// const [color, setColor] = createSignal(randomColor());
 
 export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@c539a28/';
 const fetchAvatars = async () => {
@@ -37,45 +31,10 @@ const setRandomAvatar = () => {
 };
 
 const ColorChangerAndUsername = () => {
-  onMount(() => {
-    const name = localStorage.getItem('username');
-    if (name) {
-      setUsername(name);
-    }
-  });
-
-  createEffect(() => {
-    const rig = document.getElementById('rig');
-    // @ts-ignore
-    rig?.setAttribute('player-info', {
-      name: username(),
-      // color: color(),
-    });
-    localStorage.setItem('username', username());
-  });
-
-  // createEffect(() => {
-  //   if (!avatarSrc() && !avatars.loading && avatars() && avatars().length > 0) {
-  //     setRandomAvatar();
-  //   }
-  // });
-
-  // let colorChangerBtn!: HTMLButtonElement;
   let nametagInput!: HTMLInputElement;
   return (
     <div class="flex w-full max-w-3xl flex-col gap-4 p-4">
       <AvatarSelect avatars={!avatars.loading && avatars() ? avatars() : []} />
-      {/* <button
-        ref={colorChangerBtn}
-        id="color-changer"
-        class="h-7 w-7"
-        style={`background-color:${color()};color:${color()}`}
-        onClick={() => {
-          setColor(randomColor());
-        }}
-      >
-        ■
-      </button> */}
       <div class="flex flex-col gap-2">
         <label class="font-bold" for="username">
           Your name
@@ -174,11 +133,32 @@ const BottomBar = () => {
 
 const App = () => {
   onMount(() => {
+    const name = localStorage.getItem('username');
+    if (name) {
+      setUsername(name);
+    }
+
     const rig = document.getElementById('rig');
     rig?.addEventListener('model-loaded', () => {
       setAvatarLoading(false);
     });
   });
+
+  createEffect(() => {
+    const rig = document.getElementById('rig');
+    // @ts-ignore
+    rig?.setAttribute('player-info', {
+      name: username(),
+    });
+    localStorage.setItem('username', username());
+  });
+
+  // createEffect(() => {
+  //   if (!avatarSrc() && !avatars.loading && avatars() && avatars().length > 0) {
+  //     setRandomAvatar();
+  //   }
+  // });
+
   createEffect(() => {
     if (avatarSrc()) {
       setAvatarLoading(true);
