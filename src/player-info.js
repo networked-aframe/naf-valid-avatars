@@ -306,10 +306,10 @@ AFRAME.registerComponent('player-info', {
   },
 
   tick: function (t) {
-    if (this.el.id === 'rig' && this.cameraEl && this.avatarEl) {
-      // const cameraRot = this.cameraEl.object3D.rotation;
-      // this.avatarEl.object3D.rotation.set(0, cameraRot.y + Math.PI, 0);
-    }
+    // if (this.el.id === 'rig' && this.cameraEl && this.avatarEl) {
+    //   const cameraRot = this.cameraEl.object3D.rotation;
+    //   this.avatarEl.object3D.rotation.set(0, cameraRot.y + Math.PI, 0);
+    // }
     if (this.mesh) {
       const morphTargetDictionary = this.mesh.morphTargetDictionary;
       if (t % 6000 < 500) {
