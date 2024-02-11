@@ -16,7 +16,8 @@ module.exports = {
     three: 'THREE',
   },
   devtool: 'source-map',
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  mode: 'production',
+  // mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
