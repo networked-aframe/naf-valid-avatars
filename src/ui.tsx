@@ -3,10 +3,12 @@ import './assets/style.css';
 import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
+import { MicButton } from './MicButton';
+import { ChatButton, ChatPanel } from './Chat';
 
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
-const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
+export const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
 export const [avatarSrc, setAvatarSrc] = createSignal('');
 
 export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@c539a28/';
@@ -127,6 +129,8 @@ const BottomBar = () => {
       >
         Die
       </button>
+      <MicButton />
+      <ChatButton />
     </div>
   );
 };
@@ -179,6 +183,7 @@ const App = () => {
         <SettingsScreen />
       </Show>
       <Show when={entered() && !showSettings()}>
+        <ChatPanel />
         <BottomBar />
       </Show>
     </>

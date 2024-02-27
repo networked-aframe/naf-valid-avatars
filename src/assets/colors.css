@@ -1,7 +1,11 @@
 :root {
   --panel-bg: #18181b; /* bg-zinc-900 */
+  --panel-text: #ffffff;
   --btn-primary-bg: #0f766e; /* bg-teal-700 */
   --btn-primary-bg-hover: #115e59; /* bg-teal-800 */
   --btn-primary-text: #e2e8f0; /* text-slate-200 */
+  --btn-secondary-bg: rgb(38 38 38); /* bg-neutral-800 */
+  --btn-secondary-bg-hover: rgb(64 64 64); /* bg-neutral-600 */
+  --btn-secondary-text: rgb(203 213 225); /* text-slate-300 */
   --btn-border-radius: 0.5rem;
 }
