@@ -1,5 +1,6 @@
 /* global AFRAME */
 import './player-info';
+import './change-room';
 
 AFRAME.registerComponent('spawn-in-circle', {
   schema: {

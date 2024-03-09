@@ -22,7 +22,7 @@
       renderer="physicallyCorrectLights:true;colorManagement:true"
       networked-scene="
         connectOnLoad: false;
-        room: forest;
+        room: japan;
         debug: true;
         adapter: wseasyrtc;
     "
@@ -47,17 +47,14 @@
       </a-assets>
 
       <a-entity id="scene">
-        <a-entity environment="preset:forest;shadow:true"></a-entity>
+        <a-entity environment="preset:japan;shadow:true"></a-entity>
         <a-entity light="type:ambient;intensity:0.5"></a-entity>
-        <a-mirror id="mirror" position="0 1.8 -3" scale="5 3 1" layers="0,3">
-          <a-box color="black" position="0 0 -0.02" scale="1.02 1.02 0.01"></a-box>
-        </a-mirror>
         <a-link
-          change-room="room:japan;url:japan.html"
+          change-room="room:forest;url:index.html"
           link="on:ignore"
-          href="japan"
+          href="forest"
           position="-2 1.5 3"
-          image="#thumbJapan"
+          image="#thumbForest"
         ></a-link>
       </a-entity>
 
