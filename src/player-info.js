@@ -357,13 +357,20 @@ AFRAME.registerComponent('player-info', {
   },
 
   events: {
+    // from blink-controls
     teleported: function (evt) {
-      // from blink-controls
       this.positionChanged();
     },
+    // from movement-controls
     moved: function (evt) {
-      // from movement-controls
       this.positionChanged();
+    },
+    // from cursor-teleport
+    'navigation-start': function (evt) {
+      this.el.setAttribute('player-info', 'state', 'Walking');
+    },
+    'navigation-end': function (evt) {
+      this.el.setAttribute('player-info', 'state', 'Idle');
     },
     'model-loaded': function (evt) {
       if (this.el.id === 'rig') {
