@@ -5,7 +5,10 @@
     <title>Realistic avatars — Networked-Aframe</title>
     <meta name="description" content="Realistic avatars — Networked-Aframe" />
 
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script> -->
+    <!-- aframe 1.5.0 has a warning for environment component, and an error for obb-collider hideCollider, so we're using a master build -->
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@d6fa1c3890a15e05cf63a178ebf76d98d1e413f8/dist/aframe-master.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js"></script>
     <script src="/easyrtc/easyrtc.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.1/dist/networked-aframe.min.js"></script>
@@ -55,11 +58,12 @@
           <a-box color="black" position="0 0 -0.02" scale="1.02 1.02 0.01"></a-box>
         </a-mirror>
         <a-link
-          change-room="room:japan;url:japan.html"
+          change-room="on:obbcollisionstarted;room:japan;url:japan.html"
           link="on:ignore"
           href="japan"
           position="-2 1.5 3"
           image="#thumbJapan"
+          ><a-box position="0 0 0.5" obb-collider visible="false"></a-box
         ></a-link>
       </a-entity>
 
@@ -72,7 +76,9 @@
         networked="template:#avatar-template;attachTemplateToLocal:false"
         player-info
       >
-        <a-entity id="player" class="camera" camera position="0 1.6 0" look-controls></a-entity>
+        <a-entity id="player" class="camera" camera position="0 1.6 0" look-controls>
+          <a-box obb-collider visible="false" height="0.4" depth="0.4" width="0.4"></a-box>
+        </a-entity>
       </a-entity>
     </a-scene>
   </body>
