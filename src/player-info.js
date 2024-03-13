@@ -347,6 +347,10 @@ AFRAME.registerComponent('player-info', {
   },
 
   positionChanged() {
+    if (this.el.sceneEl.systems.waypoint?.occupyWaypoint) {
+      this.el.sceneEl.systems.waypoint.unoccupyWaypoint();
+    }
+
     if (this.mixer) {
       clearTimeout(this.revertToIdleTimeout);
       this.revertToIdleTimeout = setTimeout(() => {
@@ -367,6 +371,10 @@ AFRAME.registerComponent('player-info', {
     },
     // from cursor-teleport
     'navigation-start': function (evt) {
+      if (this.el.sceneEl.systems.waypoint?.occupyWaypoint) {
+        this.el.sceneEl.systems.waypoint.unoccupyWaypoint();
+      }
+
       this.el.setAttribute('player-info', 'state', 'Walking');
     },
     'navigation-end': function (evt) {
