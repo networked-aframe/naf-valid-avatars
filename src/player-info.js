@@ -375,9 +375,17 @@ AFRAME.registerComponent('player-info', {
         this.el.sceneEl.systems.waypoint.unoccupyWaypoint();
       }
 
+      if (this.el.hasAttribute('simple-navmesh-constraint')) {
+        this.el.setAttribute('simple-navmesh-constraint', 'enabled', false);
+      }
+
       this.el.setAttribute('player-info', 'state', 'Walking');
     },
     'navigation-end': function (evt) {
+      if (this.el.hasAttribute('simple-navmesh-constraint')) {
+        this.el.setAttribute('simple-navmesh-constraint', 'enabled', true);
+      }
+
       this.el.setAttribute('player-info', 'state', 'Idle');
     },
     'model-loaded': function (evt) {
