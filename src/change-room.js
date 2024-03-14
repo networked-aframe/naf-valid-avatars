@@ -63,6 +63,11 @@ AFRAME.registerComponent('change-room', {
         console.error(`Element ${target} not found in the fetched document.`);
       }
 
+      if (sceneEl.getAttribute('networked-scene').room === this.data.room) {
+        connecting = false;
+        return;
+      }
+
       if (!nafConfig) {
         nafConfig = { ...sceneEl.getAttribute('networked-scene'), connectOnLoad: false };
       }
