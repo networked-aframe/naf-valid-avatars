@@ -7,6 +7,7 @@ import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
 import { MicButton } from './MicButton';
 import { UsernameInput } from './UsernameInput';
 import { ChatButton, ChatPanel } from './Chat';
+import { uiSettings } from './config';
 
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
@@ -91,26 +92,30 @@ const EnterScreen = () => {
 const TopBarRight = () => {
   return (
     <div class="naf-top-bar-right pr-4">
-      <button
-        type="button"
-        class="btn text-sm"
-        onClick={() => {
-          setRandomAvatar();
-        }}
-        disabled={!(!avatars.loading && avatars() && avatars().length > 0) || avatarLoading()}
-      >
-        Random avatar
-      </button>
-      <button
-        type="button"
-        class="btn text-sm"
-        onClick={() => {
-          // @ts-ignore
-          document.getElementById('rig').setAttribute('player-info', 'state', 'Dying');
-        }}
-      >
-        Die
-      </button>
+      <Show when={uiSettings.showRandomAvatarButton}>
+        <button
+          type="button"
+          class="btn text-sm"
+          onClick={() => {
+            setRandomAvatar();
+          }}
+          disabled={!(!avatars.loading && avatars() && avatars().length > 0) || avatarLoading()}
+        >
+          Random avatar
+        </button>
+      </Show>
+      <Show when={uiSettings.showDieButton}>
+        <button
+          type="button"
+          class="btn text-sm"
+          onClick={() => {
+            // @ts-ignore
+            document.getElementById('rig').setAttribute('player-info', 'state', 'Dying');
+          }}
+        >
+          Die
+        </button>
+      </Show>
     </div>
   );
 };
