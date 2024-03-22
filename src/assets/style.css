@@ -3,17 +3,33 @@
 @import 'tailwindcss/utilities';
 @import './colors.css';
 
-body {
-  @apply text-slate-200;
-}
-
-input,
-select,
-textarea {
-  @apply text-gray-900;
-}
-
 @layer base {
+  /* Override the blue set by @tailwindcss/forms*/
+  [type='text']:focus,
+  [type='email']:focus,
+  [type='url']:focus,
+  [type='password']:focus,
+  [type='number']:focus,
+  [type='date']:focus,
+  [type='datetime-local']:focus,
+  [type='month']:focus,
+  [type='search']:focus,
+  [type='tel']:focus,
+  [type='time']:focus,
+  [type='week']:focus,
+  [multiple]:focus,
+  textarea:focus,
+  select:focus {
+    --tw-ring-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-bg);
+  }
+
+  input,
+  textarea,
+  select {
+    @apply text-gray-900;
+  }
+
   a {
     @apply text-sky-800;
   }
@@ -26,6 +42,7 @@ textarea {
 @layer components {
   .bg-panel {
     background-color: var(--panel-bg);
+    color: var(--panel-text);
   }
 
   .btn {
@@ -38,5 +55,68 @@ textarea {
     &.hover {
       background-color: var(--btn-primary-bg-hover);
     }
+  }
+
+  .btn-secondary {
+    @apply btn;
+    background-color: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+
+    &:hover,
+    &.hover {
+      background-color: var(--btn-secondary-bg-hover);
+    }
+
+    &.active {
+      background-color: var(--btn-primary-bg);
+    }
+  }
+
+  .btn-rounded {
+    @apply rounded-full;
+  }
+
+  /* For the send button in ChatPanel */
+  .btn-in-input {
+    @apply text-gray-600;
+    &:hover {
+      color: var(--btn-primary-bg-hover);
+    }
+    &[disabled],
+    &[disabled]:hover {
+      @apply text-gray-600;
+    }
+  }
+
+  .naf-centered-fullscreen {
+    @apply bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2;
+  }
+
+  .naf-bar {
+    @apply pointer-events-none absolute z-10 flex w-full items-center gap-4 [&>*]:pointer-events-auto;
+  }
+
+  .naf-top-bar-left {
+    @apply naf-bar top-6 justify-start;
+  }
+
+  .naf-top-bar-center {
+    @apply naf-bar top-6 justify-center;
+  }
+
+  .naf-top-bar-right {
+    @apply naf-bar top-6 justify-end;
+  }
+
+  .naf-bottom-bar-left {
+    @apply naf-bar bottom-6 justify-start;
+  }
+
+  .naf-bottom-bar-center {
+    @apply naf-bar bottom-6 justify-center;
+  }
+
+  .naf-bottom-bar-right {
+    @apply naf-bar bottom-6 justify-end;
   }
 }

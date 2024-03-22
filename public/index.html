@@ -23,6 +23,14 @@
   </head>
 
   <body>
+    <!--
+      To enable microphone, set the following settings in networked-scene below:
+
+        adapter: easyrtc;
+        audio: true;
+
+      and set networked-audio-source on the avatar-template template
+    -->
     <a-scene
       renderer="physicallyCorrectLights:true;colorManagement:true"
       networked-scene="
@@ -30,6 +38,8 @@
         room: forest;
         debug: true;
         adapter: wseasyrtc;
+        audio: false;
+        video: false;
     "
       shadow="type: pcfsoft"
       gltf-model="meshoptDecoderPath:https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"
@@ -43,8 +53,8 @@
               <!-- here we add a text component for a nametag; the value will be updated by the player-info component -->
               <a-text class="nametag" align="center" value="?" position="0 2.1 0" scale=".5 .5 .5"></a-text>
             </a-entity>
-            <!-- <a-entity class="camera" position="0 1.6 0" networked-audio-source></a-entity> -->
             <a-entity class="camera" position="0 1.6 0"></a-entity>
+            <!-- <a-entity class="camera" position="0 1.6 0" networked-audio-source></a-entity> -->
           </a-entity>
         </template>
         <img id="thumbJapan" crossorigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/japan.png" />

@@ -184,7 +184,15 @@ AFRAME.registerComponent('avatar-bones', {
   tick: function (time, dt) {
     if (this.el.id === 'rig') {
       if (this.head) {
-        const camera = this.el.components['player-info'].cameraEl?.object3D;
+        if (!this.cameraEl) {
+          this.cameraEl = this.el.querySelector('.camera');
+          if (!this.cameraEl) {
+            console.log('No .camera found on rig children');
+            return;
+          }
+        }
+
+        const camera = this.cameraEl.object3D;
         const avatarQuaternion = this.el.components['player-info'].avatarEl.object3D.quaternion;
         const hmdQuaternion = this.localQuaternion.copy(camera.quaternion).multiply(y180Quaternion);
 
@@ -272,7 +280,6 @@ AFRAME.registerComponent('player-info', {
     // if (this.head) this.head.setAttribute('material', 'color', this.data.color);
     if (this.nametag) this.nametag.setAttribute('value', this.data.name);
 
-    this.cameraEl = this.el.querySelector('.camera');
     this.avatarEl = this.el.querySelector('.model');
 
     if (!this.avatarEl) {
@@ -284,7 +291,6 @@ AFRAME.registerComponent('player-info', {
     this.avatarEl.setAttribute('shadow', '');
 
     this.el.object3D.rotation.order = 'YXZ';
-    this.cameraEl.object3D.rotation.order = 'YXZ';
     this.avatarEl.object3D.rotation.order = 'YXZ';
 
     if (oldData && this.data.avatarSrc && oldData.avatarSrc && this.data.avatarSrc !== oldData.avatarSrc) {
@@ -306,10 +312,6 @@ AFRAME.registerComponent('player-info', {
   },
 
   tick: function (t) {
-    // if (this.el.id === 'rig' && this.cameraEl && this.avatarEl) {
-    //   const cameraRot = this.cameraEl.object3D.rotation;
-    //   this.avatarEl.object3D.rotation.set(0, cameraRot.y + Math.PI, 0);
-    // }
     if (this.mesh) {
       const morphTargetDictionary = this.mesh.morphTargetDictionary;
       if (t % 6000 < 500) {

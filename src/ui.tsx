@@ -2,11 +2,15 @@
 import './assets/style.css';
 import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
+import { IoSettingsOutline } from 'solid-icons/io';
 import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
+import { MicButton } from './MicButton';
+import { UsernameInput } from './UsernameInput';
+import { ChatButton, ChatPanel } from './Chat';
+import { uiSettings } from './config';
 
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
-const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
 export const [avatarSrc, setAvatarSrc] = createSignal('');
 
 export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@c539a28/';
@@ -30,8 +34,7 @@ const setRandomAvatar = () => {
   setGender(avatar.gender);
 };
 
-const ColorChangerAndUsername = () => {
-  let nametagInput!: HTMLInputElement;
+const UserForm = () => {
   return (
     <div class="flex w-full max-w-3xl flex-col gap-4 p-4">
       <AvatarSelect avatars={!avatars.loading && avatars() ? avatars() : []} />
@@ -39,15 +42,7 @@ const ColorChangerAndUsername = () => {
         <label class="font-bold" for="username">
           Your name
         </label>
-        <input
-          ref={nametagInput}
-          class="h-7 w-48 px-1"
-          id="username"
-          value={username()}
-          oninput={() => {
-            setUsername(nametagInput.value);
-          }}
-        />
+        <UsernameInput entity="#rig" enableColorPicker={false} />
       </div>
     </div>
   );
@@ -55,8 +50,8 @@ const ColorChangerAndUsername = () => {
 
 const SettingsScreen = () => {
   return (
-    <div class="bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2">
-      <ColorChangerAndUsername />
+    <div class="naf-centered-fullscreen">
+      <UserForm />
       <button
         type="button"
         id="saveSettingsButton"
@@ -73,8 +68,8 @@ const SettingsScreen = () => {
 
 const EnterScreen = () => {
   return (
-    <div class="bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2">
-      <ColorChangerAndUsername />
+    <div class="naf-centered-fullscreen">
+      <UserForm />
       <button
         type="button"
         id="playButton"
@@ -94,70 +89,64 @@ const EnterScreen = () => {
   );
 };
 
-const BottomBar = () => {
+const TopBarRight = () => {
   return (
-    <div class="absolute bottom-6 left-6 z-10 flex items-center gap-4">
+    <div class="naf-top-bar-right pr-4">
+      <Show when={uiSettings.showRandomAvatarButton}>
+        <button
+          type="button"
+          class="btn text-sm"
+          onClick={() => {
+            setRandomAvatar();
+          }}
+          disabled={!(!avatars.loading && avatars() && avatars().length > 0) || avatarLoading()}
+        >
+          Random avatar
+        </button>
+      </Show>
+      <Show when={uiSettings.showDieButton}>
+        <button
+          type="button"
+          class="btn text-sm"
+          onClick={() => {
+            // @ts-ignore
+            document.getElementById('rig').setAttribute('player-info', 'state', 'Dying');
+          }}
+        >
+          Die
+        </button>
+      </Show>
+    </div>
+  );
+};
+
+const BottomBarCenter = () => {
+  return (
+    <div class="naf-bottom-bar-center">
       <button
         type="button"
         id="settingsButton"
-        class="btn text-sm"
+        class="btn-secondary btn-rounded"
         onClick={() => {
           setShowSettings(true);
         }}
+        title="Settings"
       >
-        Settings
+        <IoSettingsOutline size={24} />
       </button>
-      <button
-        type="button"
-        class="btn text-sm"
-        onClick={() => {
-          setRandomAvatar();
-        }}
-        disabled={!(!avatars.loading && avatars() && avatars().length > 0) || avatarLoading()}
-      >
-        Random avatar
-      </button>
-      <button
-        type="button"
-        class="btn text-sm"
-        onClick={() => {
-          // @ts-ignore
-          document.getElementById('rig').setAttribute('player-info', 'state', 'Dying');
-        }}
-      >
-        Die
-      </button>
+      <MicButton />
+      <ChatButton />
     </div>
   );
 };
 
 const App = () => {
   onMount(() => {
-    const name = localStorage.getItem('username');
-    if (name) {
-      setUsername(name);
-    }
-
     const rig = document.getElementById('rig');
     rig?.addEventListener('model-loaded', () => {
       setAvatarLoading(false);
     });
   });
-
-  createEffect(() => {
-    const rig = document.getElementById('rig');
-    // @ts-ignore
-    rig?.setAttribute('player-info', {
-      name: username(),
-    });
-    localStorage.setItem('username', username());
-  });
-
-  // createEffect(() => {
-  //   if (!avatarSrc() && !avatars.loading && avatars() && avatars().length > 0) {
-  //     setRandomAvatar();
-  //   }
-  // });
 
   createEffect(() => {
     if (avatarSrc()) {
@@ -179,7 +168,9 @@ const App = () => {
         <SettingsScreen />
       </Show>
       <Show when={entered() && !showSettings()}>
-        <BottomBar />
+        <ChatPanel />
+        <TopBarRight />
+        <BottomBarCenter />
       </Show>
     </>
   );
