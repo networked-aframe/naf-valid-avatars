@@ -87,4 +87,36 @@
       @apply text-gray-600;
     }
   }
+
+  .naf-centered-fullscreen {
+    @apply bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2;
+  }
+
+  .naf-bar {
+    @apply pointer-events-none absolute z-10 flex w-full items-center gap-4 [&>*]:pointer-events-auto;
+  }
+
+  .naf-top-bar-left {
+    @apply naf-bar top-6 justify-start;
+  }
+
+  .naf-top-bar-center {
+    @apply naf-bar top-6 justify-center;
+  }
+
+  .naf-top-bar-right {
+    @apply naf-bar top-6 justify-end;
+  }
+
+  .naf-bottom-bar-left {
+    @apply naf-bar bottom-6 justify-start;
+  }
+
+  .naf-bottom-bar-center {
+    @apply naf-bar bottom-6 justify-center;
+  }
+
+  .naf-bottom-bar-right {
+    @apply naf-bar bottom-6 justify-end;
+  }
 }

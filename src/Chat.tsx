@@ -4,7 +4,7 @@ import { createStore } from 'solid-js/store';
 // @ts-ignore
 import Linkify from 'solid-media-linkify';
 import { BsChatDots, BsSend } from 'solid-icons/bs';
-import { username } from './ui';
+import { username } from './UsernameInput';
 
 interface ChatMessageEntry {
   text: string;
