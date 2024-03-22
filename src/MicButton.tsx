@@ -7,6 +7,15 @@ export const [micEnabled, setMicEnabled] = createSignal(savedMicEnabled === 'tru
 const [isConnected, setIsConnected] = createSignal(false);
 
 export const MicButton = () => {
+  const sceneEl = document.querySelector('a-scene');
+  // @ts-ignore
+  const settings = sceneEl?.getAttribute('networked-scene');
+  // @ts-ignore
+  const adapter = settings.adapter;
+  if (adapter !== 'easyrtc' && adapter !== 'janus') return null;
+  // @ts-ignore
+  if (adapter === 'easyrtc' && !settings.audio) return null;
+
   const iconMuted = createMemo(() => {
     return !micEnabled();
   });
