@@ -1,43 +1,85 @@
 /* global NAF */
-import { Component, For, Show, createEffect, createSignal } from 'solid-js';
+import { Component, For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 // @ts-ignore
 import Linkify from 'solid-media-linkify';
 import { BsChatDots, BsSend } from 'solid-icons/bs';
 import { username } from './UsernameInput';
 
-interface ChatMessageEntry {
+const [isDocumentVisible, setIsDocumentVisible] = createSignal(true);
+
+interface ChatMessage {
+  type: 'chat';
   text: string;
   name: string;
   fromClientId: string;
 }
 
+export type NetworkedMessage = ChatMessage;
+
+export type LogEntry = NetworkedMessage & {
+  key?: string;
+  viewed?: boolean;
+};
+
+interface MessagesStore {
+  entries: LogEntry[];
+  firstUnreadKey: string | null;
+}
+
 const [pendingMessage, setPendingMessage] = createSignal('');
-export const [messages, setMessages] = createStore<{ entries: ChatMessageEntry[] }>({ entries: [] });
+export const [messages, setMessages] = createStore<MessagesStore>({
+  entries: [],
+  firstUnreadKey: null,
+});
+
+const addToChat = (entry: LogEntry) => {
+  entry.key = Date.now().toString();
+  entry.viewed = isDocumentVisible() && showChatPanel();
+  if (!messages.firstUnreadKey && !entry.viewed) {
+    setMessages('firstUnreadKey', entry.key);
+  }
+  setMessages('entries', (entries) => [...entries, entry]);
+};
 
 const sendMessage = (text: string, name: string) => {
-  const entry = { text: text, name: name };
-  setMessages('entries', (entries) => [...entries, { ...entry, fromClientId: NAF.clientId }]);
+  const entry: ChatMessage = { type: 'chat', text: text, name: name, fromClientId: NAF.clientId };
+  addToChat(entry);
   NAF.connection.broadcastDataGuaranteed('chat', entry);
 };
 
 NAF.connection.subscribeToDataChannel('chat', (senderId, dataType, data, targetId) => {
   // append the data.text to the message log and data.name as username
-  setMessages('entries', (entries) => [...entries, { ...data, fromClientId: senderId } as ChatMessageEntry]);
+  addToChat(data as LogEntry);
 });
 
 interface ChatMessageProps {
-  entry: ChatMessageEntry;
+  entry: LogEntry;
   scroll?: () => void;
 }
 
 export const [showChatPanel, setShowChatPanel] = createSignal(false);
 
 export const ChatButton = () => {
+  onMount(() => {
+    const listener = () => {
+      setIsDocumentVisible(document.visibilityState === 'visible');
+    };
+    listener();
+    document.addEventListener('visibilitychange', listener);
+    onCleanup(() => {
+      document.removeEventListener('visibilitychange', listener);
+    });
+  });
+
+  const unreadCount = createMemo(() => {
+    return messages.entries.reduce((acc, entry) => acc + (entry.viewed ? 0 : 1), 0);
+  });
+
   return (
     <button
       type="button"
-      class="btn-secondary btn-rounded"
+      class="btn-secondary btn-rounded relative"
       classList={{ active: showChatPanel() }}
       onClick={() => {
         setShowChatPanel((v) => !v);
@@ -45,11 +87,17 @@ export const ChatButton = () => {
       title="Chat"
     >
       <BsChatDots size={24} />
+      <Show when={unreadCount() !== 0}>
+        <span class="animation-ping counter-red"></span>
+        <span class="counter-red">
+          <span>{unreadCount()}</span>
+        </span>
+      </Show>
     </button>
   );
 };
 
-export const ChatMessage: Component<ChatMessageProps> = (props) => {
+export const ChatMessageRepresentation: Component<ChatMessageProps> = (props) => {
   return (
     <div
       class="pointer-events-auto mb-2 mr-2 flex flex-col"
@@ -109,6 +157,23 @@ export const ChatPanel: Component<ChatPanelProps> = (props) => {
     }
   });
 
+  createEffect(() => {
+    if (showChatPanel()) {
+      setTimeout(() => {
+        messagesEndRef?.scrollIntoView();
+      }, 100); // the ref is undefined if we execute right away
+      setTimeout(() => {
+        setMessages(
+          'entries',
+          (entry) => !entry.viewed,
+          'viewed',
+          (v) => !v,
+        );
+        setMessages('firstUnreadKey', null);
+      }, 3000);
+    }
+  });
+
   let input!: HTMLTextAreaElement;
   let messagesEndRef!: HTMLDivElement;
 
@@ -123,7 +188,12 @@ export const ChatPanel: Component<ChatPanelProps> = (props) => {
             {(entry) => {
               return (
                 <>
-                  <ChatMessage entry={entry} scroll={scrollToBottom} />
+                  <Show when={messages.firstUnreadKey === entry.key}>
+                    <div class="relative w-full">
+                      <div class="absolute w-full text-center text-sm font-bold text-red-600">unread from here</div>
+                    </div>
+                  </Show>
+                  <ChatMessageRepresentation entry={entry} scroll={scrollToBottom} />
                 </>
               );
             }}
