@@ -88,6 +88,28 @@
     }
   }
 
+  .animation-ping {
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  .counter {
+    @apply absolute -right-2 bottom-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-300 text-sm;
+    background-color: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+  }
+
+  .counter-red {
+    @apply counter border-red-600 bg-red-600 text-white;
+  }
+
   .naf-centered-fullscreen {
     @apply bg-panel absolute inset-0 z-10 flex flex-col items-center justify-center gap-2;
   }
