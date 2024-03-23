@@ -119,7 +119,7 @@
   }
 
   .naf-top-bar-left {
-    @apply naf-bar top-6 justify-start;
+    @apply naf-bar left-6 top-6 justify-start;
   }
 
   .naf-top-bar-center {
@@ -127,11 +127,11 @@
   }
 
   .naf-top-bar-right {
-    @apply naf-bar top-6 justify-end;
+    @apply naf-bar right-6 top-6 justify-end;
   }
 
   .naf-bottom-bar-left {
-    @apply naf-bar bottom-6 justify-start;
+    @apply naf-bar bottom-6 left-6 justify-start;
   }
 
   .naf-bottom-bar-center {
@@ -139,6 +139,6 @@
   }
 
   .naf-bottom-bar-right {
-    @apply naf-bar bottom-6 justify-end;
+    @apply naf-bar bottom-6 right-6 justify-end;
   }
 }

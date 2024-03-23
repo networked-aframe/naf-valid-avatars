@@ -91,7 +91,7 @@ const EnterScreen = () => {
 
 const TopBarRight = () => {
   return (
-    <div class="naf-top-bar-right pr-4">
+    <div class="naf-top-bar-right">
       <Show when={uiSettings.showRandomAvatarButton}>
         <button
           type="button"
