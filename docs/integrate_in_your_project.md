@@ -7,12 +7,8 @@ Get the `player-info.js` file, upload it in a js folder next to your `index.html
 In your `index.html` add the following lines before `</head>`:
 
 ```html
-<!--
-    <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.1/dist/networked-aframe.min.js"></script>
-    when released that expose NAF.InterpolationBuffer, for now we use a master build:
--->
-<script src="https://cdn.jsdelivr.net/gh/networked-aframe/networked-aframe@47bc5c7/dist/networked-aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.1/dist/networked-aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
 <script src="/js/player-info.js"></script>
 ```
 
