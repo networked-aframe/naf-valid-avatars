@@ -262,6 +262,8 @@ AFRAME.registerComponent('player-info', {
     color: { type: 'color', default: '#ffffff' },
     avatarSrc: { type: 'string', default: defaultModel },
     state: { type: 'string', default: 'Idle' },
+    avatarPose: { type: 'string', default: 'stand', oneOf: ['stand', 'sit'] },
+    seatRotation: { type: 'number', default: 0 },
   },
 
   init: function () {
