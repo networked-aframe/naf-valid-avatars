@@ -63,6 +63,20 @@ document.addEventListener('DOMContentLoaded', () => {
 export const [showUsersPanel, setShowUsersPanel] = createSignal(false);
 
 export const UsersButton: Component = () => {
+  let showMicIcon = true;
+  const sceneEl = document.querySelector('a-scene');
+  // @ts-ignore
+  const settings = sceneEl?.getAttribute('networked-scene');
+  // @ts-ignore
+  const adapter = settings.adapter;
+  if (adapter !== 'easyrtc' && adapter !== 'janus') {
+    showMicIcon = false;
+  }
+  // @ts-ignore
+  if (adapter === 'easyrtc' && !settings.audio) {
+    showMicIcon = false;
+  }
+
   const usersCount = createMemo(() => {
     return presences.length;
   });
@@ -101,10 +115,10 @@ export const UsersButton: Component = () => {
             <For each={presences}>
               {(p) => (
                 <div class="flex items-center space-x-1 text-sm font-medium">
-                  <Show when={!p.muted}>
+                  <Show when={!p.muted && showMicIcon}>
                     <BsMic size={20} />
                   </Show>
-                  <Show when={p.muted}>
+                  <Show when={p.muted && showMicIcon}>
                     <BsMicMute size={20} />
                   </Show>
                   <span>{p.name}</span>
