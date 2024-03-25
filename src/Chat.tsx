@@ -1,10 +1,13 @@
 /* global NAF */
 import { Component, For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { Portal } from 'solid-js/web';
 // @ts-ignore
 import Linkify from 'solid-media-linkify';
 import { BsChatDots, BsSend } from 'solid-icons/bs';
+import { VsChromeClose } from 'solid-icons/vs';
 import { username } from './UsernameInput';
+import { setShowUsersPanel } from './UsersButton';
 
 const [isDocumentVisible, setIsDocumentVisible] = createSignal(true);
 
@@ -77,23 +80,34 @@ export const ChatButton = () => {
   });
 
   return (
-    <button
-      type="button"
-      class="btn-secondary btn-rounded relative"
-      classList={{ active: showChatPanel() }}
-      onClick={() => {
-        setShowChatPanel((v) => !v);
-      }}
-      title="Chat"
-    >
-      <BsChatDots size={24} />
-      <Show when={unreadCount() !== 0}>
-        <span class="animation-ping counter-red"></span>
-        <span class="counter-red">
-          <span>{unreadCount()}</span>
-        </span>
-      </Show>
-    </button>
+    <>
+      <button
+        type="button"
+        class="btn-secondary btn-rounded relative"
+        classList={{ active: showChatPanel() }}
+        onClick={() => {
+          setShowChatPanel((v) => !v);
+          if (showChatPanel()) {
+            setShowUsersPanel(false);
+          }
+        }}
+        title="Chat"
+      >
+        <BsChatDots size={24} />
+        <Show when={unreadCount() !== 0}>
+          <span class="animation-ping counter-red"></span>
+          <span class="counter-red">
+            <span>{unreadCount()}</span>
+          </span>
+        </Show>
+      </button>
+
+      <Portal>
+        <Show when={showChatPanel()}>
+          <ChatPanel />
+        </Show>
+      </Portal>
+    </>
   );
 };
 
@@ -183,6 +197,11 @@ export const ChatPanel: Component<ChatPanelProps> = (props) => {
   return (
     <Show when={showChatPanel()}>
       <div class="bg-panel absolute bottom-16 left-2 right-2 top-16 z-10 flex max-w-full flex-col justify-between rounded-lg p-4 shadow-lg ring-1 ring-black ring-opacity-5 sm:left-auto sm:w-screen sm:max-w-sm">
+        <div class="flex justify-end space-x-2 pb-2">
+          <button class="btn-secondary btn-rounded" type="button" title="Close" onClick={() => setShowChatPanel(false)}>
+            <VsChromeClose size={16} />
+          </button>
+        </div>
         <div class="flex grow flex-col overflow-y-auto">
           <For each={messages.entries}>
             {(entry) => {

@@ -7,6 +7,7 @@ import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
 import { MicButton } from './MicButton';
 import { UsernameInput } from './UsernameInput';
 import { ChatButton, ChatPanel } from './Chat';
+import { UsersButton } from './UsersButton';
 import { uiSettings } from './config';
 
 const [showSettings, setShowSettings] = createSignal(false);
@@ -135,6 +136,7 @@ const BottomBarCenter = () => {
         <IoSettingsOutline size={24} />
       </button>
       <MicButton />
+      <UsersButton />
       <ChatButton />
     </div>
   );
@@ -168,7 +170,6 @@ const App = () => {
         <SettingsScreen />
       </Show>
       <Show when={entered() && !showSettings()}>
-        <ChatPanel />
         <TopBarRight />
         <BottomBarCenter />
       </Show>
