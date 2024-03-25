@@ -13,4 +13,7 @@ declare var NAF: {
       callback: (senderId: string, dataType: string, data: object, targetId: string | undefined) => void,
     ) => void;
   };
+  utils: {
+    getNetworkedEntity: (el: any) => any;
+  };
 };

@@ -44,6 +44,14 @@ export const MicButton = () => {
   });
 
   createEffect(() => {
+    const cameraRig = document.querySelector('#rig,#cameraRig');
+    if (cameraRig) {
+      // @ts-ignore
+      cameraRig.setAttribute('player-info', { muted: iconMuted() });
+    }
+  });
+
+  createEffect(() => {
     const enabled = micEnabled();
     localStorage.setItem('micEnabled', enabled.toString());
     if (isConnected()) {

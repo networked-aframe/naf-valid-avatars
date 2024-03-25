@@ -262,6 +262,7 @@ AFRAME.registerComponent('player-info', {
     color: { type: 'color', default: '#ffffff' },
     avatarSrc: { type: 'string', default: defaultModel },
     state: { type: 'string', default: 'Idle' },
+    muted: { type: 'boolean', default: false },
     avatarPose: { type: 'string', default: 'stand', oneOf: ['stand', 'sit'] },
     seatRotation: { type: 'number', default: 0 },
   },
@@ -276,9 +277,14 @@ AFRAME.registerComponent('player-info', {
     this.positionChanged = this.positionChanged.bind(this);
     this.fbxLoader = new THREE.FBXLoader();
     this.glbLoader = new THREE.GLTFLoader();
+    this.updatedEventDetail = { data: undefined, oldData: undefined };
   },
 
   update: function (oldData) {
+    this.updatedEventDetail.data = this.data;
+    this.updatedEventDetail.oldData = oldData;
+    this.updatedEventDetail.el = this.el;
+    this.el.sceneEl.emit('player-info-updated', this.updatedEventDetail);
     // if (this.head) this.head.setAttribute('material', 'color', this.data.color);
     if (this.nametag) this.nametag.setAttribute('value', this.data.name);
 
