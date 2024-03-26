@@ -16,10 +16,8 @@ export interface Presence {
 export const [presences, setPresences] = createStore<Presence[]>([]);
 
 document.body.addEventListener('clientDisconnected', (evt) => {
-  setPresences((presences) =>
-    // @ts-ignore
-    presences.filter((p) => p.id !== evt.detail.clientId),
-  );
+  // @ts-ignore
+  setPresences(presences.filter((p) => p.id !== evt.detail.clientId));
 });
 
 document.addEventListener('DOMContentLoaded', () => {
