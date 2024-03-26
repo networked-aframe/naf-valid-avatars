@@ -1,7 +1,7 @@
 import { Component, For, Show, createEffect, createSignal } from 'solid-js';
 import { avatarLoading, avatarSrc, avatarsBaseUrl, setAvatarSrc } from './ui';
 
-interface Avatar {
+export interface Avatar {
   text: string;
   image: string;
   model: string;
@@ -13,12 +13,19 @@ interface Avatar {
 
 interface Props {
   avatars: Avatar[];
+  outfits?: string[];
 }
 
 export const [gender, setGender] = createSignal('F');
 export const [outfit, setOutfit] = createSignal('Casual');
+export const defaultOutfits = ['Casual', 'Busi', 'Medi', 'Milit', 'Util'];
 
 export const AvatarSelect: Component<Props> = (props) => {
+  const outfits = props.outfits ?? defaultOutfits;
+  if (outfits.length === 1) {
+    setOutfit(outfits[0]);
+  }
+
   createEffect(() => {
     if (avatarSrc()) {
       const idx = props.avatars.findIndex((avatar) => avatarSrc().endsWith(avatar.model));
@@ -48,59 +55,71 @@ export const AvatarSelect: Component<Props> = (props) => {
         </label>
       </div>
 
-      <label>Outfit</label>
-      <div class="flex w-full flex-wrap gap-x-6">
-        <label class="flex w-20 items-center gap-2">
-          <input
-            type="radio"
-            checked={outfit() === 'Casual'}
-            name="outfit"
-            value="Casual"
-            onClick={() => setOutfit('Casual')}
-          />
-          <span>Casual</span>
-        </label>
-        <label class="flex w-20 items-center gap-2">
-          <input
-            type="radio"
-            checked={outfit() === 'Busi'}
-            name="outfit"
-            value="Busi"
-            onClick={() => setOutfit('Busi')}
-          />
-          <span>Business</span>
-        </label>
-        <label class="flex w-20 items-center gap-2">
-          <input
-            type="radio"
-            checked={outfit() === 'Medi'}
-            name="outfit"
-            value="Medi"
-            onClick={() => setOutfit('Medi')}
-          />
-          <span>Medical</span>
-        </label>
-        <label class="flex w-20 items-center gap-2">
-          <input
-            type="radio"
-            checked={outfit() === 'Milit'}
-            name="outfit"
-            value="Milit"
-            onClick={() => setOutfit('Milit')}
-          />
-          <span>Military</span>
-        </label>
-        <label class="flex w-20 items-center gap-2">
-          <input
-            type="radio"
-            checked={outfit() === 'Util'}
-            name="outfit"
-            value="Util"
-            onClick={() => setOutfit('Util')}
-          />
-          <span>Utility</span>
-        </label>
-      </div>
+      <Show when={outfits.length > 1}>
+        <label>Outfit</label>
+        <div class="flex w-full flex-wrap gap-x-6">
+          <Show when={outfits.includes('Casual')}>
+            <label class="flex w-20 items-center gap-2">
+              <input
+                type="radio"
+                checked={outfit() === 'Casual'}
+                name="outfit"
+                value="Casual"
+                onClick={() => setOutfit('Casual')}
+              />
+              <span>Casual</span>
+            </label>
+          </Show>
+          <Show when={outfits.includes('Busi')}>
+            <label class="flex w-20 items-center gap-2">
+              <input
+                type="radio"
+                checked={outfit() === 'Busi'}
+                name="outfit"
+                value="Busi"
+                onClick={() => setOutfit('Busi')}
+              />
+              <span>Business</span>
+            </label>
+          </Show>
+          <Show when={outfits.includes('Medi')}>
+            <label class="flex w-20 items-center gap-2">
+              <input
+                type="radio"
+                checked={outfit() === 'Medi'}
+                name="outfit"
+                value="Medi"
+                onClick={() => setOutfit('Medi')}
+              />
+              <span>Medical</span>
+            </label>
+          </Show>
+          <Show when={outfits.includes('Milit')}>
+            <label class="flex w-20 items-center gap-2">
+              <input
+                type="radio"
+                checked={outfit() === 'Milit'}
+                name="outfit"
+                value="Milit"
+                onClick={() => setOutfit('Milit')}
+              />
+              <span>Military</span>
+            </label>
+          </Show>
+          <Show when={outfits.includes('Util')}>
+            <label class="flex w-20 items-center gap-2">
+              <input
+                type="radio"
+                checked={outfit() === 'Util'}
+                name="outfit"
+                value="Util"
+                onClick={() => setOutfit('Util')}
+              />
+              <span>Utility</span>
+            </label>
+          </Show>
+        </div>
+      </Show>
 
       <div class="flex h-52 w-full flex-row flex-nowrap gap-2 overflow-y-hidden overflow-x-scroll">
         <For each={props.avatars}>

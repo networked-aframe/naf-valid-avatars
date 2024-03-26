@@ -3,10 +3,10 @@ import './assets/style.css';
 import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 import { IoSettingsOutline } from 'solid-icons/io';
-import { AvatarSelect, setGender, setOutfit } from './AvatarSelect';
+import { Avatar, AvatarSelect, defaultOutfits, setGender, setOutfit } from './AvatarSelect';
 import { MicButton } from './MicButton';
 import { UsernameInput } from './UsernameInput';
-import { ChatButton, ChatPanel } from './Chat';
+import { ChatButton } from './Chat';
 import { UsersButton } from './UsersButton';
 import { uiSettings } from './config';
 
@@ -24,12 +24,16 @@ const fetchAvatars = async () => {
   return results;
 };
 
-const [avatars] = createResource(fetchAvatars);
+const [avatars] = createResource<Avatar[]>(fetchAvatars);
 export const [avatarLoading, setAvatarLoading] = createSignal(false);
 
 const setRandomAvatar = () => {
-  const idx = Math.floor(Math.random() * avatars().length);
-  const avatar = avatars()[idx];
+  const outfits = uiSettings.outfits ?? defaultOutfits;
+  const allAvatars = avatars();
+  if (!allAvatars) return;
+  const filteredAvatars = allAvatars.filter((avatar) => outfits.includes(avatar.outfit));
+  const idx = Math.floor(Math.random() * filteredAvatars.length);
+  const avatar = filteredAvatars[idx];
   setAvatarSrc(avatarsBaseUrl + avatar.model);
   setOutfit(avatar.outfit);
   setGender(avatar.gender);
@@ -38,7 +42,7 @@ const setRandomAvatar = () => {
 const UserForm = () => {
   return (
     <div class="flex w-full max-w-3xl flex-col gap-4 p-4">
-      <AvatarSelect avatars={!avatars.loading && avatars() ? avatars() : []} />
+      <AvatarSelect avatars={avatars() ?? []} outfits={uiSettings.outfits} />
       <div class="flex flex-col gap-2">
         <label class="font-bold" for="username">
           Your name
@@ -100,7 +104,7 @@ const TopBarRight = () => {
           onClick={() => {
             setRandomAvatar();
           }}
-          disabled={!(!avatars.loading && avatars() && avatars().length > 0) || avatarLoading()}
+          disabled={!((avatars() ?? []).length > 0) || avatarLoading()}
         >
           Random avatar
         </button>
