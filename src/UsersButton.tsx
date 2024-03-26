@@ -51,6 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const me = document.querySelector('[player-info]');
   const listenerConnected = async () => {
+    // Clear the store
+    setPresences([]);
+    // @ts-ignore
+    me.components['player-info'].presenceAdded = false;
     await NAF.utils.getNetworkedEntity(me); // to be sure me.components?.networked?.data?.owner is set
     // @ts-ignore
     listener({ detail: { el: me, data: me.components['player-info'].data }, oldData: {} });
