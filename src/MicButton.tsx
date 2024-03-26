@@ -6,16 +6,33 @@ const savedMicEnabled = localStorage.getItem('micEnabled');
 export const [micEnabled, setMicEnabled] = createSignal(savedMicEnabled === 'true');
 const [isConnected, setIsConnected] = createSignal(false);
 
-export const MicButton = () => {
-  const sceneEl = document.querySelector('a-scene');
-  // @ts-ignore
-  const settings = sceneEl?.getAttribute('networked-scene');
-  // @ts-ignore
-  const adapter = settings.adapter;
-  if (adapter !== 'easyrtc' && adapter !== 'janus') return null;
-  // @ts-ignore
-  if (adapter === 'easyrtc' && !settings.audio) return null;
+export const [audioEnabled, setAudioEnabled] = createSignal(false);
 
+document.addEventListener('DOMContentLoaded', () => {
+  const sceneEl = document.querySelector('a-scene');
+
+  const sceneLoaded = () => {
+    // @ts-ignore
+    const settings = sceneEl?.getAttribute('networked-scene'); // this returns a string and not an object if scene is not loaded
+    // @ts-ignore
+    const adapter = settings.adapter;
+    if (adapter !== 'easyrtc' && adapter !== 'janus') return;
+    // @ts-ignore
+    if (adapter === 'easyrtc' && !settings.audio) return;
+
+    setAudioEnabled(true);
+  };
+
+  // @ts-ignore
+  if (sceneEl.hasLoaded) {
+    sceneLoaded();
+  } else {
+    // @ts-ignore
+    sceneEl.addEventListener('loaded', sceneLoaded);
+  }
+});
+
+export const MicButton = () => {
   const iconMuted = createMemo(() => {
     return !micEnabled();
   });
@@ -66,23 +83,25 @@ export const MicButton = () => {
   });
 
   return (
-    <button
-      class="btn-secondary btn-rounded"
-      classList={{ active: !iconMuted() }}
-      onClick={() => {
-        setMicEnabled((enabled) => !enabled);
-        // @ts-ignore
-        document.activeElement.blur();
-        document.body.focus();
-      }}
-      title={title()}
-    >
-      <Show when={!iconMuted()}>
-        <BsMic size={24} />
-      </Show>
-      <Show when={iconMuted()}>
-        <BsMicMute size={24} />
-      </Show>
-    </button>
+    <Show when={audioEnabled()}>
+      <button
+        class="btn-secondary btn-rounded"
+        classList={{ active: !iconMuted() }}
+        onClick={() => {
+          setMicEnabled((enabled) => !enabled);
+          // @ts-ignore
+          document.activeElement.blur();
+          document.body.focus();
+        }}
+        title={title()}
+      >
+        <Show when={!iconMuted()}>
+          <BsMic size={24} />
+        </Show>
+        <Show when={iconMuted()}>
+          <BsMicMute size={24} />
+        </Show>
+      </button>
+    </Show>
   );
 };
