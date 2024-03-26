@@ -1,5 +1,5 @@
 /* global NAF */
-import { createEffect, createMemo, createSignal, onCleanup, onMount, Show, untrack } from 'solid-js';
+import { Component, createEffect, createMemo, createSignal, onCleanup, onMount, Show, untrack } from 'solid-js';
 import { BsMic, BsMicMute } from 'solid-icons/bs';
 
 const savedMicEnabled = localStorage.getItem('micEnabled');
@@ -8,7 +8,10 @@ const [isConnected, setIsConnected] = createSignal(false);
 
 export const [audioEnabled, setAudioEnabled] = createSignal(false);
 
+const [domContentLoaded, setDomContentLoaded] = createSignal(false);
+
 document.addEventListener('DOMContentLoaded', () => {
+  setDomContentLoaded(true);
   const sceneEl = document.querySelector('a-scene');
 
   const sceneLoaded = () => {
@@ -32,7 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-export const MicButton = () => {
+interface Props {
+  entity?: string;
+}
+
+export const MicButton: Component<Props> = (props) => {
   const iconMuted = createMemo(() => {
     return !micEnabled();
   });
@@ -61,11 +68,10 @@ export const MicButton = () => {
   });
 
   createEffect(() => {
-    const cameraRig = document.querySelector('#rig,#cameraRig');
-    if (cameraRig) {
-      // @ts-ignore
-      cameraRig.setAttribute('player-info', { muted: iconMuted() });
-    }
+    if (!domContentLoaded()) return;
+    const info = { muted: iconMuted() };
+    // @ts-ignore
+    document.querySelector(props.entity ?? '#player')?.setAttribute('player-info', info);
   });
 
   createEffect(() => {

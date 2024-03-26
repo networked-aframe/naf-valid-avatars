@@ -9,6 +9,12 @@ const randomColor = () => {
 export const [username, setUsername] = createSignal('user-' + Math.round(Math.random() * 10000));
 export const [color, setColor] = createSignal(randomColor());
 
+const [domContentLoaded, setDomContentLoaded] = createSignal(false);
+
+document.addEventListener('DOMContentLoaded', () => {
+  setDomContentLoaded(true);
+});
+
 interface Props {
   enableColorPicker?: boolean;
   entity?: string;
@@ -30,11 +36,13 @@ export const UsernameInput: Component<Props> = (props) => {
   createEffect(() => {
     localStorage.setItem('username', username());
     localStorage.setItem('color', color());
-    // @ts-ignore
-    document.querySelector(props.entity ?? '#player')?.setAttribute('player-info', {
+    if (!domContentLoaded()) return;
+    const info = {
       name: username(),
       color: color(),
-    });
+    };
+    // @ts-ignore
+    document.querySelector(props.entity ?? '#player')?.setAttribute('player-info', info);
   });
 
   return (

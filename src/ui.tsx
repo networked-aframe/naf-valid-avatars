@@ -135,7 +135,7 @@ const BottomBarCenter = () => {
       >
         <IoSettingsOutline size={24} />
       </button>
-      <MicButton />
+      <MicButton entity="#rig" />
       <UsersButton />
       <ChatButton />
     </div>
