@@ -51,6 +51,7 @@
     "solid-refresh": "^0.7.5",
     "style-loader": "^3.3.4",
     "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3",
     "webpack": "^5.90.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.2"
