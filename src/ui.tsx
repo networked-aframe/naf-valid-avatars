@@ -83,8 +83,10 @@ const EnterScreen = () => {
           if (!avatarSrc()) {
             setRandomAvatar();
           }
+
+          const sceneEl = document.querySelector('a-scene');
           // @ts-ignore
-          AFRAME.scenes[0].emit('connect');
+          sceneEl?.emit('connect');
           setEntered(true);
         }}
       >
