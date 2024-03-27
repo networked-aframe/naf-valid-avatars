@@ -1,4 +1,3 @@
-/* global AFRAME */
 import './assets/style.css';
 import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
