@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.0.3/dist/mirror.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@f34468b9503d0c7326b9af0f1f09959004916875/simple-navmesh-constraint.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@9850e27/dist/gltf-model-plus.min.js"></script>
 
     <script src="/dist/components.js"></script>
     <script defer src="/dist/ui.js"></script>
@@ -43,7 +44,7 @@
     "
       shadow="type: pcfsoft"
       gltf-model="meshoptDecoderPath:https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"
-      raycaster="far: 100; objects: [link];"
+      raycaster="far: 100; objects: .clickable,[link];"
       cursor="rayOrigin: mouse"
     >
       <a-assets>
@@ -75,6 +76,24 @@
           image="#thumbJapan"
           ><a-box position="0 0 0.5" obb-collider visible="false"></a-box
         ></a-link>
+        <a-cylinder radius="0.25" height="0.4" position="1.5 0.2 -2" rotation="0 180 0">
+          <a-waypoint
+            id="seat1"
+            position="0 0.22 0"
+            can-be-clicked="true"
+            can-be-occupied="true"
+            will-disable-motion="true"
+          ></a-waypoint>
+        </a-cylinder>
+        <a-cylinder radius="0.25" height="0.4" position="0.3 0.2 -2" rotation="0 180 0">
+          <a-waypoint
+            id="seat2"
+            position="0 0.22 0"
+            can-be-clicked="true"
+            can-be-occupied="true"
+            will-disable-motion="true"
+          ></a-waypoint>
+        </a-cylinder>
       </a-entity>
 
       <a-entity
