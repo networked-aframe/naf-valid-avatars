@@ -58,7 +58,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: [
+          'style-loader',
+          { loader: 'css-loader', options: { sourceMap: process.env.NODE_ENV !== 'production' } },
+          'postcss-loader',
+        ],
       },
     ],
   },
