@@ -7,6 +7,7 @@ export const [micEnabled, setMicEnabled] = createSignal(savedMicEnabled === 'tru
 const [isConnected, setIsConnected] = createSignal(false);
 
 export const [audioEnabled, setAudioEnabled] = createSignal(false);
+export const [nafAdapter, setNafAdapter] = createSignal('');
 
 const [domContentLoaded, setDomContentLoaded] = createSignal(false);
 
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings = sceneEl?.getAttribute('networked-scene'); // this returns a string and not an object if scene is not loaded
     // @ts-ignore
     const adapter = settings.adapter;
+    setNafAdapter(adapter);
     if (adapter !== 'easyrtc' && adapter !== 'janus') return;
     // @ts-ignore
     if (adapter === 'easyrtc' && !settings.audio) return;
