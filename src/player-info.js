@@ -2,6 +2,27 @@
 
 const ANIMATIONS_MAN = [
   [
+    'SittingIdle',
+    'https://cdn.glitch.global/3e6e78f9-b796-4cf3-8451-2fcba6103a3c/SittingIdle_man.fbx?v=1711641528318', // Overdrive 40 Character Arm-Space 50
+    {
+      ignoreBones: [
+        'Spine1',
+        'Spine2',
+        'Neck',
+        'Head',
+        'LeftEye',
+        'LeftEye_end',
+        'LeftEye_end_end',
+        'RightEye',
+        'RightEye_end',
+        'RightEye_end_end',
+      ],
+      positionMultiplier: 0.01,
+      positionOffset: -0.1,
+    },
+  ],
+
+  [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
     {
@@ -45,6 +66,27 @@ const ANIMATIONS_MAN = [
 ];
 
 const ANIMATIONS_WOMAN = [
+  [
+    'SittingIdle',
+    'https://cdn.glitch.global/3e6e78f9-b796-4cf3-8451-2fcba6103a3c/SittingIdle_woman.fbx?v=1711641103935', // Overdrive 40 Character Arm-Space 62
+    {
+      ignoreBones: [
+        'Spine1',
+        'Spine2',
+        'Neck',
+        'Head',
+        'LeftEye',
+        'LeftEye_end',
+        'LeftEye_end_end',
+        'RightEye',
+        'RightEye_end',
+        'RightEye_end_end',
+      ],
+      positionMultiplier: 0.01,
+      positionOffset: -0.1,
+    },
+  ],
+
   [
     'Idle',
     'https://cdn.glitch.global/d8f22817-cf4b-44e4-9cc1-0633ac6cda8d/BreathingIdle.fbx?v=1701432248342',
@@ -317,7 +359,7 @@ AFRAME.registerComponent('player-info', {
       return;
     }
 
-    if (oldData && this.data && oldData.state !== this.data.state) {
+    if (oldData && this.data && (oldData.state !== this.data.state || oldData.avatarPose !== this.data.avatarPose)) {
       this.setAnimationFromState();
     }
   },
@@ -347,7 +389,12 @@ AFRAME.registerComponent('player-info', {
   },
 
   setAnimationFromState() {
-    this.setAnimation(`clip:${this.data.state};loop:repeat`);
+    let clip = this.data.state;
+    if (this.data.state === 'Idle') {
+      clip = this.data.avatarPose === 'sit' ? 'SittingIdle' : 'Idle';
+    }
+
+    this.setAnimation(`clip:${clip};loop:repeat`);
   },
 
   getAnimationMixer: function () {
