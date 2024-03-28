@@ -3,10 +3,12 @@ import { render } from 'solid-js/web';
 import { Show, createEffect, createResource, createSignal, onMount } from 'solid-js';
 import { IoSettingsOutline } from 'solid-icons/io';
 import { Avatar, AvatarSelect, defaultOutfits, setGender, setOutfit } from './AvatarSelect';
-import { MicButton } from './MicButton';
+import { MicButton, nafAdapter } from './MicButton';
 import { UsernameInput } from './UsernameInput';
 import { ChatButton } from './Chat';
 import { UsersButton } from './UsersButton';
+import { ShareCameraButton, ShareScreenButton } from './ShareScreenButton';
+import './systems/video';
 import { uiSettings } from './config';
 
 const [showSettings, setShowSettings] = createSignal(false);
@@ -141,6 +143,10 @@ const BottomBarCenter = () => {
         <IoSettingsOutline size={24} />
       </button>
       <MicButton entity="#rig" />
+      <Show when={nafAdapter() === 'janus'}>
+        <ShareCameraButton />
+        <ShareScreenButton />
+      </Show>
       <UsersButton />
       <ChatButton />
     </div>

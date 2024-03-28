@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Realistic avatars — Networked-Aframe</title>
+    <meta name="description" content="Realistic avatars — Networked-Aframe" />
+
+    <!-- <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script> -->
+    <!-- aframe 1.5.0 has a warning for environment component, and an error for obb-collider hideCollider, so we're using a master build -->
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@d6fa1c3890a15e05cf63a178ebf76d98d1e413f8/dist/aframe-master.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.1/dist/networked-aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/networked-aframe/naf-janus-adapter@3.2.0/dist/naf-janus-adapter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/networked-aframe/naf-janus-adapter@3.2.0/examples/js/audio-system.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.4/dist/aframe-environment-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.0.3/dist/mirror.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@f34468b9503d0c7326b9af0f1f09959004916875/simple-navmesh-constraint.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@9850e27/dist/gltf-model-plus.min.js"></script>
+
+    <script src="/dist/components.js"></script>
+    <script defer src="/dist/ui.js"></script>
+  </head>
+
+  <body>
+    <!--
+      For development with janus adapter:
+
+        adapter: janus
+        serverURL: wss://192.168.1.15:8081/janus;
+
+      You need to run `npm start dev2` to have https and go to https://192.168.1.15:8080
+    -->
+    <a-scene
+      renderer="physicallyCorrectLights:true;colorManagement:true"
+      networked-scene="
+        connectOnLoad: false;
+        room: forest;
+        debug: true;
+        adapter: janus;
+        serverURL: wss://192.168.1.15:8081/janus;
+    "
+      shadow="type: pcfsoft"
+      gltf-model="meshoptDecoderPath:https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"
+      raycaster="far: 100; objects: [link];"
+      cursor="rayOrigin: mouse"
+    >
+      <a-assets>
+        <template id="avatar-template">
+          <a-entity player-info>
+            <a-entity class="model">
+              <!-- here we add a text component for a nametag; the value will be updated by the player-info component -->
+              <a-text class="nametag" align="center" value="?" position="0 2.1 0" scale=".5 .5 .5"></a-text>
+            </a-entity>
+            <a-entity class="camera" position="0 1.6 0" networked-audio-source></a-entity>
+          </a-entity>
+        </template>
+      </a-assets>
+
+      <a-entity id="scene">
+        <a-entity environment="preset:forest;shadow:true"></a-entity>
+        <a-entity light="type:ambient;intensity:0.5"></a-entity>
+        <a-mirror id="mirror" position="0 1.8 -3" scale="5 3 1" layers="0,3">
+          <a-box color="black" position="0 0 -0.02" scale="1.02 1.02 0.01"></a-box>
+        </a-mirror>
+        <a-plane
+          id="screenshare"
+          width="4.64"
+          height="2.64"
+          material="color: black"
+          position="6 2 6"
+          rotation="0 -90 0"
+          networked="template: #media-template; attachTemplateToLocal: false; networkId: screenshare; persistent: true; owner: scene"
+          video-texture-target
+          media-frame="bounds: 4.6 0.02 2.6; mediaType: all-2d"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity
+        id="rig"
+        character-controller
+        cursor-teleport="cameraRig: #rig; cameraHead: #player; collisionEntities: .environmentGround; ignoreEntities: .clickable,[link]"
+        movement-controls="fly:false;controls: gamepad, trackpad, keyboard, nipple;"
+        spawn-in-circle="radius:1"
+        networked="template:#avatar-template;attachTemplateToLocal:false"
+        player-info
+      >
+        <a-entity id="player" class="camera" camera position="0 1.6 0" look-controls>
+          <a-box obb-collider visible="false" height="0.4" depth="0.4" width="0.4"></a-box>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+    <script>
+      function genClientId() {
+        return String(crypto.getRandomValues(new Uint32Array(1))[0]);
+      }
+
+      // Prompt for audio.
+      document.addEventListener('DOMContentLoaded', () => {
+        const scene = document.querySelector('a-scene');
+        const micBtnEl = document.getElementById('mic-btn');
+
+        scene.addEventListener('adapter-ready', ({ detail: adapter }) => {
+          const clientId = genClientId();
+          adapter.setClientId(clientId);
+          navigator.mediaDevices
+            .getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
+            .then((stream) => {
+              const audioSystem = scene.systems.audio;
+              audioSystem.addStreamToOutboundAudio('microphone', stream);
+              adapter.setLocalMediaStream(audioSystem.outboundStream).then(() => {
+                // adapter.enableMicrophone(state.micEnabled);
+              });
+            })
+            .catch((err) => {
+              console.warn('Microphone access not allowed. This client will not broadcast audio.');
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
