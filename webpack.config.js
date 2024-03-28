@@ -63,13 +63,13 @@ module.exports = {
     ],
   },
   devServer: {
-    // port: process.env.PORT || 5000,
+    port: process.env.PORT || 8080,
     liveReload: false,
     hot: true,
     watchFiles: ['src/**'],
-    //    server: {
-    //      type: 'https'
-    //    },
+    server: {
+      type: 'https',
+    },
     static: ['public'],
   },
 };
