@@ -13,6 +13,7 @@ import { uiSettings } from './config';
 
 const [showSettings, setShowSettings] = createSignal(false);
 const [entered, setEntered] = createSignal(false);
+const [sceneLoaded, setSceneLoaded] = createSignal(false);
 export const [avatarSrc, setAvatarSrc] = createSignal('');
 
 export const avatarsBaseUrl = 'https://cdn.jsdelivr.net/gh/c-frame/valid-avatars-glb@c539a28/';
@@ -85,10 +86,22 @@ const EnterScreen = () => {
             setRandomAvatar();
           }
 
-          const sceneEl = document.querySelector('a-scene');
-          // @ts-ignore
-          sceneEl?.emit('connect');
           setEntered(true);
+          const sceneEl = document.querySelector('a-scene');
+          // emit connect when the scene has loaded
+          const sceneLoadedCallback = () => {
+            setSceneLoaded(true);
+            // @ts-ignore
+            sceneEl?.emit('connect');
+          };
+
+          // @ts-ignore
+          if (sceneEl.hasLoaded) {
+            sceneLoadedCallback();
+          } else {
+            // @ts-ignore
+            sceneEl.addEventListener('loaded', sceneLoadedCallback);
+          }
         }}
       >
         Enter
@@ -180,7 +193,7 @@ const App = () => {
       <Show when={showSettings()}>
         <SettingsScreen />
       </Show>
-      <Show when={entered() && !showSettings()}>
+      <Show when={entered() && sceneLoaded() && !showSettings()}>
         <TopBarRight />
         <BottomBarCenter />
       </Show>
