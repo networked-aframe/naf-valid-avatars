@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.4/dist/aframe-environment-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.0.3/dist/mirror.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls@0.4.3/dist/aframe-blink-controls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@f34468b9503d0c7326b9af0f1f09959004916875/simple-navmesh-constraint.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@9850e27/dist/gltf-model-plus.min.js"></script>
 
@@ -109,6 +110,22 @@
         <a-entity id="player" class="camera" camera position="0 1.6 0" look-controls>
           <a-box obb-collider visible="false" height="0.4" depth="0.4" width="0.4"></a-box>
         </a-entity>
+        <a-entity
+          id="left-hand"
+          networked-hand-controls="hand: left"
+          networked="template: #left-hand-default-template"
+          laser-controls="hand: left"
+          raycaster="showLine: true; far: 100; lineColor: white; objects: .clickable; interval:100;"
+          blink-controls="rotateOnTeleport: false; cameraRig: #rig; teleportOrigin: #player; collisionEntities: .navmesh;"
+        ></a-entity>
+        <a-entity
+          id="right-hand"
+          networked-hand-controls="hand:right"
+          networked="template:#right-hand-default-template"
+          laser-controls="hand: right"
+          raycaster="showLine: true; far: 100; lineColor: white; objects: .clickable; interval:100;"
+          blink-controls="rotateOnTeleport: false; cameraRig: #rig; teleportOrigin: #player; collisionEntities: .navmesh;"
+        ></a-entity>
       </a-entity>
     </a-scene>
   </body>
