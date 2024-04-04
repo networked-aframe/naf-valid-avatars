@@ -317,6 +317,12 @@ AFRAME.registerComponent('player-info', {
     this.getAnimationMixer = this.getAnimationMixer.bind(this);
     this.removeAnimationMixer = this.removeAnimationMixer.bind(this);
     this.positionChanged = this.positionChanged.bind(this);
+
+    this.isAtCloseDistance = this.isAtCloseDistance.bind(this);
+    const maxDistance = 0.5;
+    this.maxDistanceSquared = maxDistance * maxDistance;
+    this.rig = document.querySelector('#rig');
+
     this.fbxLoader = new THREE.FBXLoader();
     this.glbLoader = new THREE.GLTFLoader();
     this.updatedEventDetail = { el: undefined, data: undefined, oldData: undefined };
@@ -365,6 +371,9 @@ AFRAME.registerComponent('player-info', {
   },
 
   tick: function (t) {
+    if (this.el.id !== 'rig') {
+      this.el.object3D.visible = !this.isAtCloseDistance(this.rig.object3D, this.el.object3D);
+    }
     if (this.mesh) {
       const morphTargetDictionary = this.mesh.morphTargetDictionary;
       if (t % 6000 < 500) {
@@ -418,6 +427,16 @@ AFRAME.registerComponent('player-info', {
       }, 100);
       this.el.setAttribute('player-info', 'state', 'Walking');
     }
+  },
+
+  isAtCloseDistance: function (from, to) {
+    const f = from.position;
+    const t = to.position;
+    const dx = f.x - t.x;
+    const dz = f.z - t.z;
+    const distanceSquared = dx * dx + dz * dz;
+    const isClose = distanceSquared < this.maxDistanceSquared;
+    return isClose;
   },
 
   events: {
