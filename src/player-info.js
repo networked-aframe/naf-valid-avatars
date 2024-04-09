@@ -1,5 +1,4 @@
 /* global AFRAME NAF THREE */
-
 const ANIMATIONS_MAN = [
   [
     'SittingIdle',
@@ -514,6 +513,9 @@ AFRAME.registerComponent('player-info', {
             for (let [animationName, url, options] of animations) {
               const loader = url.indexOf('.glb') > -1 ? this.glbLoader : this.fbxLoader;
               options = options ?? {};
+              if (window.USE_GLITCH === false) {
+                url = new URL(url).pathname.split('/').pop();
+              }
               const asset = await loader.loadAsync(url);
               const clip = asset.animations[0];
               let newClip = clip;
