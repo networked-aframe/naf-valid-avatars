@@ -597,12 +597,6 @@ document.addEventListener('DOMContentLoaded', () => {
         voteBoard.object3D.rotation.copy(wp.object3D.rotation);
         voteBoard.setAttribute('vote-board', '');
       });
-
-      if (window.location.hash === '#seatmoderator') {
-        const agenda = document.getElementById('agenda');
-        agenda.setAttribute('position', '-9.5 1.65 138.5');
-        agenda.setAttribute('scale', '0.2 0.2 0.2');
-      }
     },
     { once: true },
   );
