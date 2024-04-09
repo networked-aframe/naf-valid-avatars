@@ -26,7 +26,7 @@ AFRAME.registerComponent('button', {
     label: { default: 'label' },
     width: { default: 0.11 },
     disabled: { default: false },
-    toggable: { default: false },
+    toggleable: { default: false },
   },
   init: function () {
     var el = this.el;
@@ -95,7 +95,7 @@ AFRAME.registerComponent('button', {
     var el = this.el;
     el.setAttribute('material', { color: 'green' });
     el.emit('click');
-    if (this.data.toggable) {
+    if (this.data.toggleable) {
       if (el.is('pressed')) {
         el.removeState('pressed');
       } else {
