@@ -112,6 +112,9 @@ AFRAME.registerComponent('button', {
   },
 });
 
+const pressableCoolDownDelay = 500;
+let pressableCoolDownStartedTime = 0;
+
 // This is https://github.com/aframevr/aframe/blob/master/examples/showcase/hand-tracking/pressable.js
 // with a fix to get the indexTipPosition in world position (including the rig translation)
 // and check for this.data undefined.
@@ -127,7 +130,8 @@ AFRAME.registerComponent('pressable', {
     this.indexTipPosition = new THREE.Vector3();
   },
 
-  tick: function () {
+  tick: function (t) {
+    if (t < pressableCoolDownStartedTime + pressableCoolDownDelay) return;
     // this.data may be undefined when the pressable component is removed
     if (!this.data) return;
     var handEls = this.handEls;
@@ -141,6 +145,7 @@ AFRAME.registerComponent('pressable', {
       distance = this.calculateFingerDistance(this.indexTipPosition);
       if (distance < this.data.pressDistance) {
         if (!this.pressed) {
+          pressableCoolDownStartedTime = t;
           this.el.emit('pressedstarted');
         }
         this.pressed = true;
@@ -360,7 +365,7 @@ AFRAME.registerComponent('item-up-button', {
   },
   events: {
     click: function (evt) {
-      this.agenda.components.agenda.moveItem(this.data, -1);
+      setTimeout(() => this.agenda.components.agenda.moveItem(this.data, -1), 500);
     },
   },
 });
@@ -375,7 +380,7 @@ AFRAME.registerComponent('item-down-button', {
   },
   events: {
     click: function (evt) {
-      this.agenda.components.agenda.moveItem(this.data, 1);
+      setTimeout(() => this.agenda.components.agenda.moveItem(this.data, 1), 500);
     },
   },
 });
