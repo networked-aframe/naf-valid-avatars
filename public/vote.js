@@ -117,7 +117,6 @@ let pressableCoolDownStartedTime = 0;
 
 // This is https://github.com/aframevr/aframe/blob/master/examples/showcase/hand-tracking/pressable.js
 // with a fix to get the indexTipPosition in world position (including the rig translation)
-// and check for this.data undefined.
 AFRAME.registerComponent('pressable', {
   schema: {
     pressDistance: { default: 0.06 },
