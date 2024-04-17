@@ -1,0 +1,276 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Vote session</title>
+    <meta name="description" content="Realistic avatars — Networked-Aframe" />
+
+    <!-- <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script> -->
+    <!-- aframe 1.5.0 has a warning for environment component, and an error for obb-collider hideCollider, so we're using a master build -->
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@93435eb302cd4c7de7df0daaeeb48bb87383581f/dist/aframe-master.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js"></script>
+    <script src="/easyrtc/easyrtc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.2/dist/networked-aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.4/dist/aframe-environment-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.1.1/dist/mirror.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls@0.4.3/dist/aframe-blink-controls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@f34468b9503d0c7326b9af0f1f09959004916875/simple-navmesh-constraint.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@fc902ac/dist/gltf-model-plus.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-troika-text@0.11.0/dist/aframe-troika-text.min.js"></script>
+    <!-- babia post 1.2.6, some graphs examples works with aframe 1.5.0 -->
+    <script src="https://cdn.jsdelivr.net/gh/babiaxr/aframe-babia-components@c5a5ec8/dist/aframe-babia-components.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/aframe-text-geometry-component@0.5.2/dist/aframe-text-geometry-component.min.js"></script> -->
+
+    <script src="./vote.js"></script>
+    <script>
+      window.uiSettings = {
+        showRandomAvatarButton: false,
+        showDieButton: false,
+        outfits: ['Busi'],
+      };
+      window.USE_GLITCH = false;
+      AFRAME.registerComponent('shortcuts', {
+        init() {
+          this.onKeyup = this.onKeyup.bind(this);
+        },
+        play() {
+          window.addEventListener('keyup', this.onKeyup, false);
+        },
+        pause() {
+          window.removeEventListener('keyup', this.onKeyup);
+        },
+        onKeyup(evt) {
+          if (!AFRAME.utils.shouldCaptureKeyEvent(evt)) {
+            return;
+          }
+
+          if (evt.keyCode === 71) {
+            // g
+            this.cameraRig = document.querySelector('#rig');
+            if (this.cameraRig.getAttribute('movement-controls').fly) {
+              this.cameraRig.setAttribute('movement-controls', 'fly', false);
+              if (this.cameraRig.hasAttribute('simple-navmesh-constraint')) {
+                this.cameraRig.setAttribute('simple-navmesh-constraint', 'enabled', true);
+              }
+            } else {
+              this.cameraRig.setAttribute('movement-controls', 'fly', true);
+              if (this.cameraRig.hasAttribute('simple-navmesh-constraint')) {
+                this.cameraRig.setAttribute('simple-navmesh-constraint', 'enabled', false);
+              }
+            }
+          }
+
+          if (evt.code === 'Space') {
+            this.el.sceneEl.systems.waypoint.toggleClickableWaypoints();
+          }
+        },
+      });
+    </script>
+    <script src="/dist/components.js"></script>
+    <script defer src="/dist/ui.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const sceneEl = document.querySelector('a-scene');
+
+        const sceneLoaded = () => {
+          // remove this code after https://github.com/networked-aframe/naf-valid-avatars/issues/28
+          // @ts-ignore
+          setTimeout(() => {
+            const rig = document.getElementById('rig');
+            rig.removeAttribute('simple-navmesh-constraint');
+            rig.setAttribute('simple-navmesh-constraint', 'navmesh:.navmesh;fall:10;height:0;exclude:.navmesh-hole;');
+          }, 2000);
+
+          const agenda = document.getElementById('agenda');
+          if (window.location.hash === '#seat-moderator') {
+            agenda.setAttribute('position', '-0.4 1 -5');
+            agenda.setAttribute('scale', '0.2 0.2 0.2');
+          }
+        };
+
+        // @ts-ignore
+        if (sceneEl.hasLoaded) {
+          sceneLoaded();
+        } else {
+          // @ts-ignore
+          sceneEl.addEventListener('loaded', sceneLoaded);
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <!--
+      To enable microphone, set the following settings in networked-scene below:
+
+        adapter: easyrtc;
+        audio: true;
+
+      and set networked-audio-source on the avatar-template template
+    -->
+    <a-scene
+      light="defaultLightsEnabled:false"
+      renderer="physicallyCorrectLights:true;colorManagement:true"
+      networked-scene="
+        connectOnLoad: false;
+        room: meeting;
+        debug: true;
+        adapter: wseasyrtc;
+        audio: false;
+        video: false;
+    "
+      shadow="type: pcfsoft"
+      gltf-model="meshoptDecoderPath:https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"
+      raycaster="far: 100; objects: .babiaxraycasterclass,.clickable,[link];"
+      cursor="rayOrigin: mouse"
+    >
+      <a-assets>
+        <template id="avatar-template">
+          <a-entity player-info>
+            <a-entity class="model">
+              <!-- here we add a text component for a nametag; the value will be updated by the player-info component -->
+              <a-text class="nametag" align="center" value="?" position="0 2.1 0" scale=".5 .5 .5"></a-text>
+            </a-entity>
+            <a-entity class="camera" position="0 1.6 0"></a-entity>
+            <!-- <a-entity class="camera" position="0 1.6 0" networked-audio-source></a-entity> -->
+          </a-entity>
+        </template>
+      </a-assets>
+
+      <a-entity environment="preset:forest;shadow:true"></a-entity>
+      <a-entity light="type:ambient;intensity:0.5"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 2 1"></a-entity>
+
+      <a-entity id="vote-results" position="4 2 -5" billboard vote-results></a-entity>
+
+      <a-entity
+        id="agenda"
+        position="-4 2 -5"
+        layout="type: line; plane: yz; margin: 0.4; reverse: true"
+        billboard
+        agenda
+        agenda-items='items:[{"label":"Adoption of agenda","id":"1","vote":true},{"label":"Chair\u0027s announcements","id":"2"},{"label":"Adoption of minutes","id":"3","vote":true},{"label":"Vote on Pilot Projects and Preparatory Actions (PPPAs)","id":"4","vote":true},{"label":"Amending Directive 2013/34/EU","id":"5"}]'
+      ></a-entity>
+
+      <a-waypoint id="spawn-point" can-be-spawn-point="true" position="0 0 6" rotation="0 180 0"></a-waypoint>
+
+      <a-cylinder radius="0.25" height="0.4" position="0 0.2 -5" rotation="0 0 0">
+        <a-waypoint
+          id="seat-moderator"
+          position="0 0.22 0"
+          can-be-clicked="true"
+          can-be-occupied="true"
+          will-disable-motion="true"
+        ></a-waypoint>
+      </a-cylinder>
+
+      <a-cylinder radius="0.25" height="0.4" position="-2 0.2 0" rotation="0 180 0">
+        <a-waypoint
+          id="seat1"
+          position="0 0.22 0"
+          can-be-clicked="true"
+          can-be-occupied="true"
+          will-disable-motion="true"
+        ></a-waypoint>
+      </a-cylinder>
+
+      <a-cylinder radius="0.25" height="0.4" position="-1 0.2 0" rotation="0 180 0">
+        <a-waypoint
+          id="seat2"
+          position="0 0.22 0"
+          can-be-clicked="true"
+          can-be-occupied="true"
+          will-disable-motion="true"
+        ></a-waypoint>
+      </a-cylinder>
+
+      <a-cylinder radius="0.25" height="0.4" position="0 0.2 0" rotation="0 180 0">
+        <a-waypoint
+          id="seat3"
+          position="0 0.22 0"
+          can-be-clicked="true"
+          can-be-occupied="true"
+          will-disable-motion="true"
+        ></a-waypoint>
+      </a-cylinder>
+
+      <a-cylinder radius="0.25" height="0.4" position="1 0.2 0" rotation="0 180 0">
+        <a-waypoint
+          id="seat4"
+          position="0 0.22 0"
+          can-be-clicked="true"
+          can-be-occupied="true"
+          will-disable-motion="true"
+        ></a-waypoint>
+      </a-cylinder>
+
+      <a-cylinder radius="0.25" height="0.4" position="2 0.2 0" rotation="0 180 0">
+        <a-waypoint
+          id="seat5"
+          position="0 0.22 0"
+          can-be-clicked="true"
+          can-be-occupied="true"
+          will-disable-motion="true"
+        ></a-waypoint>
+      </a-cylinder>
+
+      <!-- We still need and entity with gltf-model-plus otherwise the waypoints doesn't work, that's an issue in gltf-model-plus. -->
+      <a-entity class="environment-settings" gltf-model-plus="./box.glb" position="-999 0 0"></a-entity>
+
+      <a-plane
+        class="clickable"
+        width="1.5"
+        height="0.6"
+        material="color:black"
+        text="value: sit on nearby seat; width: 4; align: center"
+        position="2 2 2"
+        hoverable
+        move-to-unoccupied-waypoint="filterRegExp:seat[0-9]"
+      ></a-plane>
+
+      <a-entity
+        id="rig"
+        shortcuts
+        move-to-spawn-point
+        movement-controls="fly: false; controls: keyboard, nipple;"
+        networked="template:#avatar-template;attachTemplateToLocal:false"
+        player-info
+      >
+        <a-entity id="player" class="camera" camera position="0 1.6 0" look-controls>
+          <a-box obb-collider visible="false" height="0.4" depth="0.4" width="0.4"></a-box>
+        </a-entity>
+        <a-entity hand-tracking-controls="hand: left"></a-entity>
+        <a-entity hand-tracking-controls="hand: right"></a-entity>
+      </a-entity>
+    </a-scene>
+
+    <div
+      id="help-box"
+      style="
+        backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 0.5rem;
+        color: #ffffff;
+        left: 1.5rem;
+        padding: 1rem;
+        position: absolute;
+        top: 1.5rem;
+        width: 22em;
+        z-index: 1;
+      "
+    >
+      <div class="help-header" style="display: flex; flex: row; justify-content: space-between">
+        <h2 style="margin: 0; font-size: 1.2rem">Vote session</h2>
+      </div>
+      <div id="help-content">
+        This experience needs a moderator to start the vote session. Open another tab for the moderator by clicking on
+        this
+        <a href="?role=moderator#seat-moderator" target="_blank">link</a>.
+      </div>
+    </div>
+  </body>
+</html>
