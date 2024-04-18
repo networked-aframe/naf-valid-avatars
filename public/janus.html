@@ -27,12 +27,24 @@
 
   <body>
     <!--
-      For development with janus adapter:
+      For development with janus adapter, networked-scene is configured with:
 
         adapter: janus
         serverURL: wss://192.168.1.15:8081/janus;
 
-      You need to run `npm start dev2` to have https and go to https://192.168.1.15:8080
+      Run janus container locally with webpack dev server in front for https:
+
+      cd janus-plugin-sfu/docker
+      docker compose up
+
+      cd naf-valid-avatars
+      npm run dev2 # to have https on port 8080
+
+      cd naf-janus-adapter
+      npm start # to have https proxy on 8081 to janus http://127.0.0.1:8188/janus
+
+      go to https://192.168.1.15:8081/janus to accept the certificate, close the tab
+      go to https://192.168.1.15:8080/janus.html
     -->
     <a-scene
       light="defaultLightsEnabled:false"
@@ -115,12 +127,75 @@
         return String(crypto.getRandomValues(new Uint32Array(1))[0]);
       }
 
+      const setupPeerConnectionConfig = (adapter, iceServers) => {
+        const qs = new URLSearchParams(location.search);
+        const forceTurn = qs.get('force_turn');
+        const forceTcp = qs.get('force_tcp');
+        const peerConnectionConfig = {};
+
+        if (iceServers && iceServers.urls !== null) {
+          if (forceTcp) {
+            iceServers.urls = iceServers.urls.filter((url) => url.startsWith('turn') && url.endsWith('tcp'));
+          }
+          const hasStunServer = !!iceServers.urls.find((url) => url.startsWith('stun'));
+          const newIceServers = [];
+          if (!forceTcp && !forceTurn && !hasStunServer) {
+            newIceServers.push({ urls: 'stun:stun1.l.google.com:19302' });
+          }
+          // remove __typename from the graphql query
+          newIceServers.push({
+            username: iceServers.username,
+            credential: iceServers.credential,
+            urls: iceServers.urls,
+          });
+
+          peerConnectionConfig.iceServers = newIceServers;
+
+          if (forceTurn || forceTcp) {
+            peerConnectionConfig.iceTransportPolicy = 'relay';
+          }
+        } else {
+          peerConnectionConfig.iceServers = [
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+          ];
+        }
+
+        adapter.setPeerConnectionConfig(peerConnectionConfig);
+      };
+
       // Prompt for audio.
       document.addEventListener('DOMContentLoaded', () => {
         const scene = document.querySelector('a-scene');
         const micBtnEl = document.getElementById('mic-btn');
 
         scene.addEventListener('adapter-ready', ({ detail: adapter }) => {
+          // See https://github.com/networked-aframe/naf-janus-adapter/issues/14 to properly protect the credentials of the turn server
+          // const iceServers = {
+          //   credential: 'TheCredential',
+          //   urls: [
+          //     'stun:fr-turn6.xirsys.com',
+          //     'turn:fr-turn6.xirsys.com:80?transport=udp',
+          //     'turn:fr-turn6.xirsys.com:3478?transport=udp',
+          //     'turn:fr-turn6.xirsys.com:80?transport=tcp',
+          //     'turn:fr-turn6.xirsys.com:3478?transport=tcp',
+          //     'turns:fr-turn6.xirsys.com:443?transport=tcp',
+          //     'turns:fr-turn6.xirsys.com:5349?transport=tcp',
+          //   ],
+          //   username: 'TheUserName',
+          // };
+          const iceServers = {
+            urls: ['stun:stun1.l.google.com:19302'],
+          };
+          setupPeerConnectionConfig(adapter, iceServers);
+
+          // See https://github.com/networked-aframe/naf-janus-adapter/issues/48 to better handle the connection error.
+          // Here we just log the error to not have an infinite reconnection.
+          adapter.onReconnectionError = () => console.error('connect_error');
+          adapter.onReconnected = () => {
+            console.log('reconnected');
+          };
+
           const clientId = genClientId();
           adapter.setClientId(clientId);
           navigator.mediaDevices
