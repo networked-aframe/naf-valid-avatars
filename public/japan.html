@@ -11,12 +11,12 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js"></script>
     <script src="/easyrtc/easyrtc.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.1/dist/networked-aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/networked-aframe@0.12.2/dist/networked-aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.4/dist/aframe-environment-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.1.1/dist/mirror.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@f34468b9503d0c7326b9af0f1f09959004916875/simple-navmesh-constraint.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@bca4792/simple-navmesh-constraint.js"></script>
 
     <script src="/dist/components.js"></script>
     <script defer src="/dist/ui.js"></script>
@@ -66,8 +66,8 @@
 
       <a-entity
         id="rig"
-        character-controller
         cursor-teleport="cameraRig: #rig; cameraHead: #player; collisionEntities: .environmentGround; ignoreEntities: .clickable,[link]"
+        simple-navmesh-constraint="navmesh:.environmentGround,.environmentDressing;fall:10;height:0;exclude:.navmesh-hole;"
         movement-controls="fly:false;controls: gamepad, trackpad, keyboard, nipple;"
         spawn-in-circle="radius:1"
         networked="template:#avatar-template;attachTemplateToLocal:false"
