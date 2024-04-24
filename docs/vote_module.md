@@ -13,7 +13,7 @@ Reordering items with "up" and "down" buttons is also possible, the order is pro
 ## How to use it
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@fc902ac/dist/gltf-model-plus.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@c2a0420/dist/gltf-model-plus.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aframe-troika-text@0.11.0/dist/aframe-troika-text.min.js"></script>
 <!-- babia post 1.2.6, some graphs examples works with aframe 1.5.0 -->

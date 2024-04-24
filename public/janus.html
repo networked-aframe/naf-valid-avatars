@@ -18,8 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-mirror@1.1.1/dist/mirror.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls@0.4.3/dist/aframe-blink-controls.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@f34468b9503d0c7326b9af0f1f09959004916875/simple-navmesh-constraint.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@fc902ac/dist/gltf-model-plus.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@bca4792/simple-navmesh-constraint.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@c2a0420/dist/gltf-model-plus.min.js"></script>
 
     <script src="/dist/components.js"></script>
     <script defer src="/dist/ui.js"></script>
@@ -94,8 +94,8 @@
 
       <a-entity
         id="rig"
-        character-controller
         cursor-teleport="cameraRig: #rig; cameraHead: #player; collisionEntities: .environmentGround; ignoreEntities: .clickable,[link]"
+        simple-navmesh-constraint="navmesh:.environmentGround,.environmentDressing;fall:10;height:0;exclude:.navmesh-hole;"
         movement-controls="fly:false;controls: gamepad, trackpad, keyboard, nipple;"
         spawn-in-circle="radius:1"
         networked="template:#avatar-template;attachTemplateToLocal:false"
