@@ -101,7 +101,7 @@
   }
 
   .counter {
-    @apply absolute -right-2 bottom-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-300 text-sm;
+    @apply absolute -right-2 bottom-0 flex h-6 w-6 select-none items-center justify-center rounded-full border-2 border-gray-300 text-sm;
     background-color: var(--btn-secondary-bg);
     color: var(--btn-secondary-text);
   }
