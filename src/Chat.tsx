@@ -222,7 +222,7 @@ export const ChatPanel: Component<ChatPanelProps> = (props) => {
         <form class="relative flex" onSubmit={sendMessageAndResetInput}>
           <textarea
             rows={textRow()}
-            class="flex grow resize-none rounded-lg pr-10"
+            class="form-textarea flex grow resize-none rounded-lg pr-10"
             ref={input}
             value={pendingMessage()}
             placeholder={'Text message'}

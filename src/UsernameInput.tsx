@@ -50,7 +50,7 @@ export const UsernameInput: Component<Props> = (props) => {
       <input
         id="username"
         type="text"
-        class="h-7 px-1"
+        class="form-input h-7 px-1"
         value={username()}
         oninput={(e: any) => {
           setUsername(e.target.value);

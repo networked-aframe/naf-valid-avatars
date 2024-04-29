@@ -46,11 +46,25 @@ export const AvatarSelect: Component<Props> = (props) => {
       <label>Gender</label>
       <div class="flex w-full flex-wrap gap-x-6">
         <label class="flex w-20 items-center gap-2">
-          <input type="radio" checked={gender() === 'F'} name="gender" value="F" onClick={() => setGender('F')} />
+          <input
+            class="form-radio"
+            type="radio"
+            checked={gender() === 'F'}
+            name="gender"
+            value="F"
+            onClick={() => setGender('F')}
+          />
           <span>Female</span>
         </label>
         <label class="flex w-20 items-center gap-2">
-          <input type="radio" checked={gender() === 'M'} name="gender" value="M" onClick={() => setGender('M')} />
+          <input
+            class="form-radio"
+            type="radio"
+            checked={gender() === 'M'}
+            name="gender"
+            value="M"
+            onClick={() => setGender('M')}
+          />
           <span>Male</span>
         </label>
       </div>
@@ -61,6 +75,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           <Show when={outfits.includes('Casual')}>
             <label class="flex w-20 items-center gap-2">
               <input
+                class="form-radio"
                 type="radio"
                 checked={outfit() === 'Casual'}
                 name="outfit"
@@ -73,6 +88,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           <Show when={outfits.includes('Busi')}>
             <label class="flex w-20 items-center gap-2">
               <input
+                class="form-radio"
                 type="radio"
                 checked={outfit() === 'Busi'}
                 name="outfit"
@@ -85,6 +101,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           <Show when={outfits.includes('Medi')}>
             <label class="flex w-20 items-center gap-2">
               <input
+                class="form-radio"
                 type="radio"
                 checked={outfit() === 'Medi'}
                 name="outfit"
@@ -97,6 +114,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           <Show when={outfits.includes('Milit')}>
             <label class="flex w-20 items-center gap-2">
               <input
+                class="form-radio"
                 type="radio"
                 checked={outfit() === 'Milit'}
                 name="outfit"
@@ -109,6 +127,7 @@ export const AvatarSelect: Component<Props> = (props) => {
           <Show when={outfits.includes('Util')}>
             <label class="flex w-20 items-center gap-2">
               <input
+                class="form-radio"
                 type="radio"
                 checked={outfit() === 'Util'}
                 name="outfit"

@@ -4,26 +4,6 @@
 @import './colors.css';
 
 @layer base {
-  /* Override the blue set by @tailwindcss/forms*/
-  [type='text']:focus,
-  [type='email']:focus,
-  [type='url']:focus,
-  [type='password']:focus,
-  [type='number']:focus,
-  [type='date']:focus,
-  [type='datetime-local']:focus,
-  [type='month']:focus,
-  [type='search']:focus,
-  [type='tel']:focus,
-  [type='time']:focus,
-  [type='week']:focus,
-  [multiple]:focus,
-  textarea:focus,
-  select:focus {
-    --tw-ring-color: var(--btn-primary-bg);
-    border-color: var(--btn-primary-bg);
-  }
-
   input,
   textarea,
   select {
@@ -40,6 +20,25 @@
 }
 
 @layer components {
+  /* Override the blue set by @tailwindcss/forms */
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus,
+  .form-multiselect:focus {
+    --tw-ring-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-bg);
+  }
+
+  .form-checkbox,
+  .form-radio {
+    color: var(--btn-primary-bg);
+  }
+
+  .form-checkbox:focus,
+  .form-radio:focus {
+    --tw-ring-color: var(--btn-primary-bg);
+  }
+
   .bg-panel {
     background-color: var(--panel-bg);
     color: var(--panel-text);
