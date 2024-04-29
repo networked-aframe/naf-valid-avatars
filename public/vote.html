@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-cursor-teleport@1.5.0/dist/aframe-cursor-teleport-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls@0.4.3/dist/aframe-blink-controls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AdaRoseCannon/aframe-xr-boilerplate@bca4792/simple-navmesh-constraint.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@c2a0420/dist/gltf-model-plus.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-gltf-model-plus@341004f/dist/gltf-model-plus.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-troika-text@0.11.0/dist/aframe-troika-text.min.js"></script>
     <!-- babia post 1.2.6, some graphs examples works with aframe 1.5.0 -->
@@ -209,9 +209,6 @@
           will-disable-motion="true"
         ></a-waypoint>
       </a-cylinder>
-
-      <!-- We still need and entity with gltf-model-plus otherwise the waypoints doesn't work, that's an issue in gltf-model-plus. -->
-      <a-entity class="environment-settings" gltf-model-plus="./box.glb" position="-999 0 0"></a-entity>
 
       <a-plane
         class="clickable"
