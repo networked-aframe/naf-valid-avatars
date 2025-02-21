@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.2",
-    "networked-aframe": "^0.12.1",
+    "networked-aframe": "^0.14.0",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.8.15",
     "solid-media-linkify": "vincentfretin/solid-media-linkify#76bd96d"
