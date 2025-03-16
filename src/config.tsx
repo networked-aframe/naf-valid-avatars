@@ -1,6 +1,6 @@
 export const uiSettings = {
-  showRandomAvatarButton: true,
-  showDieButton: true,
+  showRandomAvatarButton: false,
+  showDieButton: false,
   // outfits: ['Busi'],
   // @ts-ignore
   ...window.uiSettings,
