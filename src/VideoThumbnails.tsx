@@ -1,6 +1,6 @@
 import { createEffect, createSignal, For, onCleanup, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { getNameFromClientId } from './UsersButton';
+import { getNameFromClientId } from './presence';
 
 interface VideoThumbnailProps {
   video: HTMLVideoElement;
