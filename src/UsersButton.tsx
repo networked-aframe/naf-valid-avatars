@@ -16,6 +16,14 @@ export interface Presence {
 
 export const [presences, setPresences] = createStore<Presence[]>([]);
 
+export const getNameFromClientId = (clientId: string) => {
+  const p = presences.find((p) => p.id === clientId);
+  if (!p) {
+    return 'Unknown';
+  }
+  return p.name;
+};
+
 document.body.addEventListener('clientDisconnected', (evt) => {
   // @ts-ignore
   setPresences(presences.filter((p) => p.id !== evt.detail.clientId));

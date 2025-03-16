@@ -7,6 +7,7 @@ import { MicButton, nafAdapter } from './MicButton';
 import { UsernameInput } from './UsernameInput';
 import { ChatButton } from './Chat';
 import { UsersButton } from './UsersButton';
+import { VideoThumbnails } from './VideoThumbnails';
 import { ShareCameraButton, ShareScreenButton } from './ShareScreenButton';
 import './systems/video';
 import { uiSettings } from './config';
@@ -194,6 +195,7 @@ const App = () => {
         <SettingsScreen />
       </Show>
       <Show when={entered() && sceneLoaded() && !showSettings()}>
+        <VideoThumbnails />
         <TopBarRight />
         <BottomBarCenter />
       </Show>
